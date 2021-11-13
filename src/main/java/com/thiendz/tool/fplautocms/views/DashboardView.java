@@ -1,7 +1,9 @@
 package com.thiendz.tool.fplautocms.views;
 
 
+import com.thiendz.tool.fplautocms.FplAutoCmsMain;
 import com.thiendz.tool.fplautocms.data.models.User;
+import com.thiendz.tool.fplautocms.services.ContactService;
 import com.thiendz.tool.fplautocms.services.CourseService;
 import com.thiendz.tool.fplautocms.services.LoginService;
 import lombok.Data;
@@ -45,7 +47,7 @@ public class DashboardView extends javax.swing.JFrame {
         btnContact = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("AUTO CMS V3.2.1  - 10 Quiz 10 Điểm Easy!");
+        setTitle("AUTO CMS v" + FplAutoCmsMain.APP_VER + "  - 10 Quiz 10 Điểm Easy!");
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -58,7 +60,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbSlogan.setFont(new java.awt.Font("Consolas", 1, 14)); // NOI18N
         lbSlogan.setForeground(new java.awt.Color(0, 51, 255));
         lbSlogan.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSlogan.setText("Version v0.0.0.0 - 10 Quiz 10 Point Easy!");
+        lbSlogan.setText("Version v" + FplAutoCmsMain.APP_VER + " - 10 Quiz 10 Point Easy!");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -194,11 +196,6 @@ public class DashboardView extends javax.swing.JFrame {
         cbbQuiz.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         cbbQuiz.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Select Quiz..."}));
         cbbQuiz.setEnabled(false);
-        cbbQuiz.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbbQuizActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -320,6 +317,7 @@ public class DashboardView extends javax.swing.JFrame {
     }
 
     private void btnContactActionPerformed(java.awt.event.ActionEvent evt) {
+        ContactService.start();
     }
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
@@ -331,9 +329,6 @@ public class DashboardView extends javax.swing.JFrame {
 
     private void cbbCourseActionPerformed(java.awt.event.ActionEvent evt) {
         CourseService.start(this);
-    }
-
-    private void cbbQuizActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
     private javax.swing.JToggleButton btnContact;
