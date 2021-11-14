@@ -6,6 +6,7 @@ import com.thiendz.tool.fplautocms.data.models.User;
 import com.thiendz.tool.fplautocms.services.ContactService;
 import com.thiendz.tool.fplautocms.services.CourseService;
 import com.thiendz.tool.fplautocms.services.LoginService;
+import com.thiendz.tool.fplautocms.services.SolutionService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -325,6 +326,7 @@ public class DashboardView extends javax.swing.JFrame {
     }
 
     private void btnSolutionActionPerformed(java.awt.event.ActionEvent evt) {
+        SolutionService.start(this);
     }
 
     private void cbbCourseActionPerformed(java.awt.event.ActionEvent evt) {
@@ -350,5 +352,4 @@ public class DashboardView extends javax.swing.JFrame {
     private javax.swing.JLabel lbTitle;
     private javax.swing.JLabel lbUserId;
     private javax.swing.JTextField tfCookie;
-
 }

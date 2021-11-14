@@ -1,5 +1,7 @@
 package com.thiendz.tool.fplautocms.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,5 +33,13 @@ public class StringUtils {
             Thread.sleep(sleep);
         } catch (InterruptedException ex) {
         }
+    }
+    public static String URLEncoder(String url) {
+        String encoder = null;
+        try {
+            encoder = URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException  e) {
+        }
+        return encoder;
     }
 }
