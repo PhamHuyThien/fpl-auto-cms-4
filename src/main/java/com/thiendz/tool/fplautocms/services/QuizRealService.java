@@ -1,11 +1,12 @@
 package com.thiendz.tool.fplautocms.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thiendz.tool.fplautocms.data.models.Quiz;
 import com.thiendz.tool.fplautocms.data.models.QuizQuestion;
 import com.thiendz.tool.fplautocms.data.models.User;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionListDto;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionTextDto;
+import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.Data;
 import org.apache.http.client.HttpClient;
@@ -140,7 +141,7 @@ public class QuizRealService implements Runnable {
             quizQuestion.setKey(Objects.requireNonNull(elmWraper.selectFirst("input")).attr("name"));
             try {
                 quizQuestion.setListValue(buildListValueText(elmPolyInput));
-            } catch (CmsException | NullPointerException e) {
+            } catch (CmsException | NullPointerException | JsonProcessingException e) {
                 //not continue;
             }
             quizQuestion.setAmountInput(elmPolyInput.select("input").size());
@@ -151,13 +152,12 @@ public class QuizRealService implements Runnable {
         return alQuizQuestions;
     }
 
-    private static List<String> buildListValueText(Element elmPolyInput) throws CmsException {
+    private static List<String> buildListValueText(Element elmPolyInput) throws CmsException, JsonProcessingException {
         Element elmData = elmPolyInput.selectFirst("div[class='data']");
         if (elmData == null) {
             throw new CmsException("buildListValueText div[class='data'] is NULL!");
         }
-        ObjectMapper objectMapper = new ObjectMapper();
-        QuizQuestionListDto quizQuestionListDto = objectMapper.convertValue(elmData.text(), QuizQuestionListDto.class);
+        QuizQuestionListDto quizQuestionListDto = MapperUtils.objectMapper.readValue(elmData.text(), QuizQuestionListDto.class);
         return quizQuestionListDto.getQuestions().stream().map(QuizQuestionTextDto::getText).collect(Collectors.toList());
     }
 

@@ -1,9 +1,9 @@
 package com.thiendz.tool.fplautocms.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thiendz.tool.fplautocms.data.models.Course;
 import com.thiendz.tool.fplautocms.data.models.User;
+import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
@@ -81,8 +81,7 @@ public class LoginService implements Runnable {
         if (elmUserMetaData == null) {
             throw new CmsException("script[id='user-metadata'] is NULL!");
         }
-        ObjectMapper objectMapper = new ObjectMapper();
-        user = objectMapper.readValue(elmUserMetaData.html(), User.class);
+        user = MapperUtils.objectMapper.readValue(elmUserMetaData.html(), User.class);
         if (user.getUser_id() == null) {
             throw new CmsException("Login fail, Cookie expired.");
         }

@@ -1,7 +1,5 @@
 package com.thiendz.tool.fplautocms.services;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thiendz.tool.fplautocms.data.models.Course;
 import com.thiendz.tool.fplautocms.data.models.Quiz;
 import com.thiendz.tool.fplautocms.data.models.QuizQuestion;
@@ -63,7 +61,7 @@ public class SolutionService implements Runnable {
             ThreadUtils threadUtils = new ThreadUtils(cmsSolutionList, cmsSolutionList.size());
             threadUtils.execute();
             threadUtils.await();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }
@@ -73,7 +71,7 @@ public class SolutionService implements Runnable {
     }
 
     @Data
-    class CmsSolution implements Runnable {
+    static class CmsSolution implements Runnable {
 
         private static final String URL_POST_BASE = "https://cms.poly.edu.vn/courses/%s/xblock/%s+type@problem+block@%s/handler/xmodule_handler/problem_check";
         private static final int TIME_SLEEP_SOLUTION = 60000;
@@ -104,9 +102,6 @@ public class SolutionService implements Runnable {
         }
 
         public void start() throws CmsException, IOException {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
             //đã đủ điểm
             if (isQuizFinished(quiz)) {
                 this.status = 1;
@@ -137,16 +132,15 @@ public class SolutionService implements Runnable {
                     final String bodyResponseSolution = executor.execute(request)
                             .returnContent()
                             .asString();
-                    SolutionResponseDto solutionResponseDto = objectMapper.convertValue(bodyResponseSolution, SolutionResponseDto.class);
-                    System.out.println(solutionResponseDto);
+                    SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
                     updateStatusQuizQuestion(solutionResponseDto.getContents(), quiz);
-                    //
                     timeTick = DateUtils.getCurrentMilis();
                 }
                 ThreadUtils.sleep(100);
             } while (!isQuizFinished(quiz));
             this.status = 1;
         }
+
 
         private String buildParam() throws CmsException {
             List<QuizQuestion> quizQuestionList = quiz.getQuizQuestions();

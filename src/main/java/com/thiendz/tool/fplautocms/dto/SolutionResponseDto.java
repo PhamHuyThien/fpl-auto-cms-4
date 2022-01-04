@@ -18,4 +18,5 @@ public class SolutionResponseDto {
     Double current_score;
     Long attempts_used;
     String contents;
+    String html;
 }

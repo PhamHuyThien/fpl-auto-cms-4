@@ -1,13 +1,9 @@
 package com.thiendz.tool.fplautocms.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thiendz.tool.fplautocms.data.models.Course;
 import com.thiendz.tool.fplautocms.data.models.Quiz;
-import com.thiendz.tool.fplautocms.data.models.QuizQuestion;
 import com.thiendz.tool.fplautocms.data.models.User;
 import com.thiendz.tool.fplautocms.dto.QuizDto;
-import com.thiendz.tool.fplautocms.dto.QuizQuestionListDto;
-import com.thiendz.tool.fplautocms.dto.QuizQuestionTextDto;
 import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.ThreadUtils;
@@ -15,18 +11,15 @@ import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
-import lombok.Data;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
