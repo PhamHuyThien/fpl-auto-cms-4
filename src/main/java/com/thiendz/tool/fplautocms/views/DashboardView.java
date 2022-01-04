@@ -2,11 +2,11 @@ package com.thiendz.tool.fplautocms.views;
 
 
 import com.thiendz.tool.fplautocms.FplAutoCmsMain;
-import com.thiendz.tool.fplautocms.data.models.User;
-import com.thiendz.tool.fplautocms.services.ContactService;
-import com.thiendz.tool.fplautocms.services.CourseService;
-import com.thiendz.tool.fplautocms.services.LoginService;
-import com.thiendz.tool.fplautocms.services.SolutionService;
+import com.thiendz.tool.fplautocms.controllers.CourseController;
+import com.thiendz.tool.fplautocms.controllers.LoginController;
+import com.thiendz.tool.fplautocms.controllers.SolutionController;
+import com.thiendz.tool.fplautocms.models.User;
+import com.thiendz.tool.fplautocms.controllers.ContactController;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -318,19 +318,19 @@ public class DashboardView extends javax.swing.JFrame {
     }
 
     private void btnContactActionPerformed(java.awt.event.ActionEvent evt) {
-        ContactService.start();
+        ContactController.start();
     }
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        LoginService.start(this);
-    }
-
-    private void btnSolutionActionPerformed(java.awt.event.ActionEvent evt) {
-        SolutionService.start(this);
+        LoginController.start(this);
     }
 
     private void cbbCourseActionPerformed(java.awt.event.ActionEvent evt) {
-        CourseService.start(this);
+        CourseController.start(this);
+    }
+
+    private void btnSolutionActionPerformed(java.awt.event.ActionEvent evt) {
+        SolutionController.start(this);
     }
 
     private javax.swing.JToggleButton btnContact;

@@ -1,9 +1,9 @@
 package com.thiendz.tool.fplautocms.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.thiendz.tool.fplautocms.data.models.Quiz;
-import com.thiendz.tool.fplautocms.data.models.QuizQuestion;
-import com.thiendz.tool.fplautocms.data.models.User;
+import com.thiendz.tool.fplautocms.models.Quiz;
+import com.thiendz.tool.fplautocms.models.QuizQuestion;
+import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionListDto;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionTextDto;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;

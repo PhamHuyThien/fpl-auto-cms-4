@@ -1,11 +1,11 @@
-package com.thiendz.tool.fplautocms.services;
+package com.thiendz.tool.fplautocms.controllers;
 
 import com.thiendz.tool.fplautocms.FplAutoCmsMain;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
 
-public class ContactService implements Runnable {
+public class ContactController implements Runnable {
     public static void start() {
-        new Thread(new ContactService()).start();
+        new Thread(new ContactController()).start();
     }
 
     @Override

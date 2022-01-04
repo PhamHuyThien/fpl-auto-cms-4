@@ -1,4 +1,4 @@
-package com.thiendz.tool.fplautocms.data.models;
+package com.thiendz.tool.fplautocms.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

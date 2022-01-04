@@ -1,4 +1,4 @@
-package com.thiendz.tool.fplautocms.data.models;
+package com.thiendz.tool.fplautocms.models;
 
 import com.thiendz.tool.fplautocms.utils.NumberUtils;
 import lombok.AllArgsConstructor;

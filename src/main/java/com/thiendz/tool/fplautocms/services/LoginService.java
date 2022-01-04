@@ -1,13 +1,9 @@
 package com.thiendz.tool.fplautocms.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.thiendz.tool.fplautocms.data.models.Course;
-import com.thiendz.tool.fplautocms.data.models.User;
+import com.thiendz.tool.fplautocms.models.Course;
+import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
-import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
-import com.thiendz.tool.fplautocms.utils.consts.Messages;
-import com.thiendz.tool.fplautocms.utils.excepts.InputException;
-import com.thiendz.tool.fplautocms.views.DashboardView;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import org.apache.http.client.fluent.Request;
 import org.jsoup.Jsoup;
@@ -21,62 +17,38 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LoginService implements Runnable {
+public class LoginService {
     private static final String CMS_URL_DASHBOARD = "https://cms.poly.edu.vn/dashboard/";
     private static final String REGEX_CSRF_TOKEN = "csrftoken=(.+?);";
-    private final DashboardView dashboardView;
     private final String cookie;
+    private Document document;
     private User user;
 
-    public static void start(DashboardView dashboardView) {
-        new Thread(new LoginService(dashboardView)).start();
+    public LoginService(String cookie) {
+        this.cookie = cookie;
     }
 
-    public LoginService(DashboardView dashboardView) {
-        this.dashboardView = dashboardView;
-        this.cookie = dashboardView.getTfCookie().getText();
+    public User getUser() {
+        return user;
     }
 
-    @Override
-    public void run() {
-        dashboardView.getBtnLogin().setEnabled(false);
-        try {
-            checkValidLoginInput();
-            Document document = parseDocument();
-            parseUserInfo(document);
-            parseCourseInfo(document);
-            showDashboard();
-            MsgBoxUtils.alert(dashboardView, Messages.LOGIN_SUCCESS);
-        } catch (InputException e) {
-            MsgBoxUtils.alert(dashboardView, Messages.INVALID_INPUT + e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            MsgBoxUtils.alert(dashboardView, Messages.CONNECT_ERROR);
-        } catch (CmsException e) {
-            MsgBoxUtils.alert(dashboardView, e.toString());
-        } catch (Exception e) {
-            MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
-        }
-        dashboardView.getBtnLogin().setEnabled(true);
+    public void login() throws IOException, CmsException {
+        parseDocument();
+        parseUserInfo();
+        parseCourseInfo();
     }
 
-    private void checkValidLoginInput() throws InputException {
-        if (cookie.trim().length() == 0) {
-            throw new InputException("cookie input not empty.");
-        }
-    }
-
-    private Document parseDocument() throws IOException {
+    private void parseDocument() throws IOException {
         String bodyDash = Request
                 .Get(CMS_URL_DASHBOARD)
                 .setHeader("cookie", cookie)
                 .execute()
                 .returnContent()
                 .asString();
-        return Jsoup.parse(bodyDash);
+        document = Jsoup.parse(bodyDash);
     }
 
-    private void parseUserInfo(Document document) throws CmsException, JsonProcessingException {
+    private void parseUserInfo() throws CmsException, JsonProcessingException {
         Element elmUserMetaData = document.selectFirst("script[id='user-metadata']");
         if (elmUserMetaData == null) {
             throw new CmsException("script[id='user-metadata'] is NULL!");
@@ -96,7 +68,7 @@ public class LoginService implements Runnable {
         user.setCookie(cookie);
     }
 
-    private void parseCourseInfo(Document document) throws CmsException {
+    private void parseCourseInfo() throws CmsException {
         Elements elmsLeanModal = document.select("a[rel='leanModal']");
         if (elmsLeanModal.isEmpty()) {
             throw new CmsException("buildCourse a[rel='leanModal'] is empty!");
@@ -112,17 +84,5 @@ public class LoginService implements Runnable {
             courses.add(course);
         }
         user.setCourses(courses);
-    }
-
-    private void showDashboard() {
-        dashboardView.setUser(user);
-        dashboardView.getLbHello().setText("Hello: " + user.getUsername());
-        dashboardView.getLbUserId().setText("User ID: " + user.getUser_id());
-        dashboardView.getCbbCourse().removeAllItems();
-        dashboardView.getCbbCourse().addItem("Select Course...");
-        user.getCourses().forEach(course -> {
-            dashboardView.getCbbCourse().addItem(course.getName());
-        });
-        dashboardView.getCbbCourse().setEnabled(true);
     }
 }
