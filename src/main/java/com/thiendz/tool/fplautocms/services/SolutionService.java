@@ -30,12 +30,25 @@ public class SolutionService implements Runnable {
 
     private CallbackSolution callbackSolution;
 
+    private int status;
     private double scorePresent;
 
     public SolutionService(User user, Course course, Quiz quiz) {
         this.user = user;
         this.course = course;
         this.quiz = quiz;
+    }
+
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public double getScorePresent() {
+        return scorePresent;
+    }
+
+    public int getStatus() {
+        return status;
     }
 
     public void setCallbackSolution(CallbackSolution callbackSolution) {
@@ -54,12 +67,12 @@ public class SolutionService implements Runnable {
     }
 
     public void start() throws CmsException, IOException {
-        //đã đủ điểm
         if (isQuizFinished(quiz)) {
-            callbackSolution.call(scorePresent, 1);
+            status = 1;
+            callbackSolution.call(scorePresent, status);
             return;
         }
-        resetQuizQuestion(quiz);
+        resetQuizQuestion();
         final String url = String.format(
                 URL_POST_BASE,
                 course.getId(),
@@ -86,45 +99,40 @@ public class SolutionService implements Runnable {
                         .asString();
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
                 scorePresent = solutionResponseDto.getCurrent_score();
-                callbackSolution.call(scorePresent, 0);
+                callbackSolution.call(scorePresent, status);
                 updateStatusQuizQuestion(solutionResponseDto.getContents(), quiz);
                 timeTick = DateUtils.getCurrentMilis();
             }
             ThreadUtils.sleep(100);
         } while (!isQuizFinished(quiz));
-        callbackSolution.call(scorePresent, 1);
+        status = 1;
+        callbackSolution.call(scorePresent, status);
     }
 
 
     private String buildParam() throws CmsException {
         List<QuizQuestion> quizQuestionList = quiz.getQuizQuestions();
         StringBuilder sb = new StringBuilder();
-        //ghép các parampost từ quizQuestion, thành paramPost Full
         for (int i = 0; i < quizQuestionList.size(); i++) {
             QuizQuestion quizQuestion = quizQuestionList.get(i);
-            //câu hỏi này là câu hỏi tự luận thì bỏ qua
             if (quizQuestion.getListValue() == null) {
                 continue;
             }
             String ans = setValue(quizQuestionList.get(i));
             sb.append(ans).append("&");
-            if (!quizQuestion.isCorrect()) { //hoàn thành rồi thì bỏ qua tăng test
+            if (!quizQuestion.isCorrect()) {
                 quiz.getQuizQuestions().get(i).setTestCount(quiz.getQuizQuestions().get(i).getTestCount() + 1);
             }
-            quiz.getQuizQuestions().get(i).setSelectValue(ans); // set đáp án
+            quiz.getQuizQuestions().get(i).setSelectValue(ans);
         }
         return makeUpValue(sb.toString());
     }
 
-    //convert quizQuestion sang paramPost, tự động ++ giá trị tiếp theo cho quizQUestion
     private String setValue(QuizQuestion quizQuestion) throws CmsException {
-        //đã hoàn thành thì chỉ lấy getAnswer()
         if (quizQuestion.isCorrect()) {
             return quizQuestion.getSelectValue();
         }
-        // đây là kiểu multichoice
         if (quizQuestion.isMultiChoice()) {
-            //tạo mới biến global alInt chứa danh sách tổ hợp chập k của n phần tử
             List<List<Integer>> alInt;
             if (quizQuestion.getType().equals("text")) {
                 alInt = new Permutation(quizQuestion.getAmountInput(), quizQuestion.getListValue().size()).getResult();
@@ -134,36 +142,29 @@ public class SolutionService implements Runnable {
 
             StringBuilder value = new StringBuilder();
             int index = quizQuestion.getTestCount();
-            //nếu vượt quá index tổ hợp
             if (index >= alInt.size()) {
                 throw new CmsException("setValue ArrayIndexOutOfBound alInt!");
             }
-            //nếu là text: định dạng key=value1,value2...
             if (quizQuestion.getType().equals("text")) {
                 value.append(quizQuestion.getKey()).append("=");
             }
             alInt.get(index).forEach((i) -> {
                 if (quizQuestion.getType().equals("text")) {
-                    // kiểu text chỉ việc append value1,value2...
                     value.append(StringUtils.URLEncoder(quizQuestion.getListValue().get(i))).append("%2C");
                 } else {
-                    // kiểu checkbox => key[]=value1&key[]=value2.....
                     value.append(StringUtils.URLEncoder(quizQuestion.getKey())).append("=").append(StringUtils.URLEncoder(quizQuestion.getListValue().get(i))).append("&");
                 }
             });
-            //xóa kí tự nối cuối và return quizQuestion
             return makeUpValue(value.toString());
-        } else { // đây là kiểu chọn 1 đáp án
+        } else {
             List<String> choiceList = quizQuestion.getListValue();
             String key = StringUtils.URLEncoder(quizQuestion.getKey());
             String value = StringUtils.URLEncoder(choiceList.get(quizQuestion.getTestCount()));
-            //định dạng: key=value
             String res = key + "=" + value + "&";
             return makeUpValue(res);
         }
     }
 
-    //kiểm tra giá trị đầu vào và setCorrect lại cho mỗi quizQuestion
     private void updateStatusQuizQuestion(String body, Quiz quiz) throws CmsException {
         Document document = Jsoup.parse(body);
         List<QuizQuestion> quizResults = QuizDetailService.buildQuizQuestions(document, true);
@@ -203,7 +204,7 @@ public class SolutionService implements Runnable {
                 .count() == quizQuestionList.size();
     }
 
-    private void resetQuizQuestion(Quiz quiz) {
+    private void resetQuizQuestion() {
         for (QuizQuestion quizQuestion : quiz.getQuizQuestions()) {
             quizQuestion.setCorrect(false);
         }

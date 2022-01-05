@@ -10,4 +10,13 @@ public class NumberUtils {
         }
         return -1;
     }
+
+    public static double roundReal(double d, int index) {
+        int j = 1;
+        for (int i = 0; i < index; i++) {
+            j *= 10;
+        }
+        return (double) Math.floor(d * j) / j;
+    }
+
 }

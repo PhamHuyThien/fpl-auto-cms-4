@@ -36,14 +36,17 @@ public class CourseController implements Runnable {
         if (courseSelectedIndex > 0) {
             if (user.getCourses().get(courseSelectedIndex - 1).getQuizList() == null) {
                 try {
+                    dashboardView.getTfCookie().setEnabled(false);
                     dashboardView.getBtnLogin().setEnabled(false);
                     dashboardView.getCbbCourse().setEnabled(false);
                     dashboardView.getCbbQuiz().setEnabled(false);
                     dashboardView.getBtnSolution().setEnabled(false);
                     checkValidInput();
+                    dashboardView.showProcess("Đang tải dữ liệu khóa học...");
                     QuizService quizService = new QuizService(user, course);
                     quizService.render();
                     course = quizService.getCourse();
+                    dashboardView.showProcess("Tải dữ liệu khóa học hoàn tất.");
                     dashboardView.getUser().getCourses().set(courseSelectedIndex - 1, course);
                     dashboardView.getCbbQuiz().setEnabled(true);
                     dashboardView.getBtnSolution().setEnabled(true);
@@ -58,6 +61,7 @@ public class CourseController implements Runnable {
                     e.printStackTrace();
                     MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
                 }
+                dashboardView.getTfCookie().setEnabled(true);
                 dashboardView.getBtnLogin().setEnabled(true);
                 dashboardView.getCbbCourse().setEnabled(true);
                 dashboardView.getCbbQuiz().setEnabled(true);

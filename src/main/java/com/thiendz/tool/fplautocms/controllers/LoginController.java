@@ -26,18 +26,20 @@ public class LoginController implements Runnable {
 
     @Override
     public void run() {
+        dashboardView.getTfCookie().setEnabled(false);
         dashboardView.getBtnLogin().setEnabled(false);
         dashboardView.getCbbCourse().setEnabled(false);
         dashboardView.getCbbQuiz().setEnabled(false);
         dashboardView.getBtnSolution().setEnabled(false);
         try {
             checkValidLoginInput();
+            dashboardView.showProcess("Đang đăng nhập...");
             LoginService loginService = new LoginService(cookie);
             loginService.login();
             this.user = loginService.getUser();
             showDashboard();
             dashboardView.getCbbCourse().setEnabled(true);
-            MsgBoxUtils.alert(dashboardView, Messages.LOGIN_SUCCESS);
+            dashboardView.showProcess("Đăng nhập thành công.");
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, Messages.INVALID_INPUT + e);
         } catch (IOException e) {
@@ -48,6 +50,7 @@ public class LoginController implements Runnable {
         } catch (Exception e) {
             MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
         }
+        dashboardView.getTfCookie().setEnabled(true);
         dashboardView.getBtnLogin().setEnabled(true);
     }
 

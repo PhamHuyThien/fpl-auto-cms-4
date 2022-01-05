@@ -333,6 +333,24 @@ public class DashboardView extends javax.swing.JFrame {
         SolutionController.start(this);
     }
 
+    public void showProcess(String s) {
+        String line = ".....................................";
+        String br = "<br>";
+        String[] splLine = s.split("\\#\\#");
+        String show = "<html><center>";
+        if (splLine.length == 1) {
+            show += line + br + splLine[0] + br + line;
+        }
+        if (splLine.length == 2) {
+            show += splLine[0] + br + splLine[1] + br + line;
+        }
+        if (splLine.length == 3) {
+            show += splLine[0] + br + splLine[1] + splLine[2];
+        }
+        show += "</center></html>";
+        lbProcess.setText(show);
+    }
+
     private javax.swing.JToggleButton btnContact;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnSolution;

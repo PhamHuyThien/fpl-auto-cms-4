@@ -31,6 +31,7 @@ public class SolutionController implements Runnable {
     public void run() {
         try {
             checkValidInput();
+            dashboardView.getTfCookie().setEnabled(false);
             dashboardView.getBtnLogin().setEnabled(false);
             dashboardView.getCbbCourse().setEnabled(false);
             dashboardView.getCbbQuiz().setEnabled(false);
@@ -48,18 +49,21 @@ public class SolutionController implements Runnable {
                         user.getCourses().get(indexCourse - 1),
                         user.getCourses().get(indexCourse - 1).getQuizList().get(i)
                 );
-                solutionService.setCallbackSolution((scorePresent, status) -> {
-                    //code here...
-                    System.out.println(scorePresent + " " + status);
-                });
+                solutionService.setCallbackSolution((scorePresent, status) -> {});
                 cmsSolutionList.add(solutionService);
             }
             ThreadUtils threadUtils = new ThreadUtils(cmsSolutionList, cmsSolutionList.size());
             threadUtils.execute();
-            threadUtils.await();
+            int sec = 0;
+            do {
+                showProcess(cmsSolutionList, ++sec, false);
+                ThreadUtils.sleep(1000);
+            } while (threadUtils.isTerminating());
+            showProcess(cmsSolutionList, ++sec, true);
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, e.toString());
         }
+        dashboardView.getTfCookie().setEnabled(true);
         dashboardView.getBtnLogin().setEnabled(true);
         dashboardView.getCbbCourse().setEnabled(true);
         dashboardView.getCbbQuiz().setEnabled(true);
@@ -69,5 +73,31 @@ public class SolutionController implements Runnable {
     private void checkValidInput() throws InputException {
         if (indexQuiz < 1)
             throw new InputException(Messages.YOU_CHOOSE_QUIZ);
+    }
+
+    private void showProcess(List<SolutionService> solutionServiceList, int time, boolean finish) {
+        int len = solutionServiceList.size();
+        String timeStr = DateUtils.toStringDate(time);
+        String content = finish ? " - " + len + " Quiz thành công!" : "...";
+        StringBuilder show = new StringBuilder("Đang giải " + timeStr + content + "##");
+        for (SolutionService solutionService : solutionServiceList) {
+            int quizNum = NumberUtils.getInt(solutionService.getQuiz().getName());
+            String name = quizNum != -1 ? quizNum + ":" : "FT:";
+            String score = name + NumberUtils.roundReal(solutionService.getScorePresent(), 1) + ":";
+            switch (solutionService.getStatus()) {
+                case -1:
+                    score += "f - ";
+                    break;
+                case 0:
+                    score += "r - ";
+                    break;
+                case 1:
+                    score += "d - ";
+                    break;
+            }
+            show.append(score);
+        }
+        show = new StringBuilder(show.substring(0, show.length() - 3));
+        dashboardView.showProcess(show.toString());
     }
 }
