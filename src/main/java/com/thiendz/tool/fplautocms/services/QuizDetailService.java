@@ -25,12 +25,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
-public class QuizRealService implements Runnable {
+public class QuizDetailService implements Runnable {
 
     private final User user;
     private Quiz quiz;
 
-    public QuizRealService(User user, Quiz quiz) {
+    public QuizDetailService(User user, Quiz quiz) {
         this.user = user;
         this.quiz = quiz;
     }
@@ -41,6 +41,7 @@ public class QuizRealService implements Runnable {
             filter();
         } catch (Exception ex) {
             this.quiz = null;
+            ex.printStackTrace();
         }
     }
 

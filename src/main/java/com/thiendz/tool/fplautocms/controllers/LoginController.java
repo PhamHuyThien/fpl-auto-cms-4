@@ -27,12 +27,16 @@ public class LoginController implements Runnable {
     @Override
     public void run() {
         dashboardView.getBtnLogin().setEnabled(false);
+        dashboardView.getCbbCourse().setEnabled(false);
+        dashboardView.getCbbQuiz().setEnabled(false);
+        dashboardView.getBtnSolution().setEnabled(false);
         try {
             checkValidLoginInput();
             LoginService loginService = new LoginService(cookie);
             loginService.login();
             this.user = loginService.getUser();
             showDashboard();
+            dashboardView.getCbbCourse().setEnabled(true);
             MsgBoxUtils.alert(dashboardView, Messages.LOGIN_SUCCESS);
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, Messages.INVALID_INPUT + e);
@@ -55,7 +59,7 @@ public class LoginController implements Runnable {
 
     private void showDashboard() {
         dashboardView.setUser(user);
-        dashboardView.getLbHello().setText("Xin chào: " + user.getUsername());
+        dashboardView.getLbHello().setText("Hi: " + user.getUsername());
         dashboardView.getLbUserId().setText("User ID: " + user.getUser_id());
         dashboardView.getCbbCourse().removeAllItems();
         dashboardView.getCbbCourse().addItem("Chọn môn học...");

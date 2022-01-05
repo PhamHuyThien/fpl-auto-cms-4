@@ -153,7 +153,7 @@ public class DashboardView extends javax.swing.JFrame {
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lbHello.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        lbHello.setText("Xin chào:.................");
+        lbHello.setText("Hi:.................");
 
         lbUserId.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         lbUserId.setText("User ID:..............");

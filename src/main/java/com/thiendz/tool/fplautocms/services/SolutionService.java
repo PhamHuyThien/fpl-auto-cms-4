@@ -166,7 +166,7 @@ public class SolutionService implements Runnable {
     //kiểm tra giá trị đầu vào và setCorrect lại cho mỗi quizQuestion
     private void updateStatusQuizQuestion(String body, Quiz quiz) throws CmsException {
         Document document = Jsoup.parse(body);
-        List<QuizQuestion> quizResults = QuizRealService.buildQuizQuestions(document, true);
+        List<QuizQuestion> quizResults = QuizDetailService.buildQuizQuestions(document, true);
         if (!compareKeyQuizQuestion(quiz.getQuizQuestions(), quizResults)) {
             throw new CmsException("QuizResult != QuizStandard!");
         }
