@@ -3,6 +3,7 @@ package com.thiendz.tool.fplautocms.controllers;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.services.SolutionService;
 import com.thiendz.tool.fplautocms.utils.*;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 
@@ -30,6 +31,10 @@ public class SolutionController implements Runnable {
     public void run() {
         try {
             checkValidInput();
+            dashboardView.getBtnLogin().setEnabled(false);
+            dashboardView.getCbbCourse().setEnabled(false);
+            dashboardView.getCbbQuiz().setEnabled(false);
+            dashboardView.getBtnSolution().setEnabled(false);
             int start = indexQuiz - 1;
             int end = start;
             if (indexQuiz - 1 == user.getCourses().get(indexCourse - 1).getQuizList().size()) {
@@ -45,17 +50,24 @@ public class SolutionController implements Runnable {
                 );
                 solutionService.setCallbackSolution((scorePresent, status) -> {
                     //code here...
+                    System.out.println(scorePresent + " " + status);
                 });
                 cmsSolutionList.add(solutionService);
             }
             ThreadUtils threadUtils = new ThreadUtils(cmsSolutionList, cmsSolutionList.size());
             threadUtils.execute();
             threadUtils.await();
-        } catch (Exception ignored) {
-
+        } catch (InputException e) {
+            MsgBoxUtils.alert(dashboardView, e.toString());
         }
+        dashboardView.getBtnLogin().setEnabled(true);
+        dashboardView.getCbbCourse().setEnabled(true);
+        dashboardView.getCbbQuiz().setEnabled(true);
+        dashboardView.getBtnSolution().setEnabled(true);
     }
 
     private void checkValidInput() throws InputException {
+        if (indexQuiz < 1)
+            throw new InputException(Messages.YOU_CHOOSE_QUIZ);
     }
 }

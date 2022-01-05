@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 public class QuizDetailService implements Runnable {
@@ -157,8 +158,8 @@ public class QuizDetailService implements Runnable {
         if (elmData == null) {
             throw new CmsException("div[class='data'] không tồn tại.");
         }
-        QuizQuestionListDto quizQuestionListDto = MapperUtils.objectMapper.readValue(elmData.text(), QuizQuestionListDto.class);
-        return quizQuestionListDto.getQuestions().stream().map(QuizQuestionTextDto::getText).collect(Collectors.toList());
+        QuizQuestionTextDto[] questionTextDtoList = MapperUtils.objectMapper.readValue(elmData.text(), QuizQuestionTextDto[].class);
+        return Stream.of(questionTextDtoList).map(QuizQuestionTextDto::getText).collect(Collectors.toList());
     }
 
     private static List<String> buildListValue(Element elmWrapper) throws CmsException {
