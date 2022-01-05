@@ -44,7 +44,6 @@ public class QuizRealService implements Runnable {
         }
     }
 
-    //
     public void filter() throws CmsException, IOException {
         final HttpClient client = HttpClientBuilder.create()
                 .disableRedirectHandling()
@@ -68,13 +67,13 @@ public class QuizRealService implements Runnable {
         //===========================
         Element elmData = document.selectFirst("div[class='seq_contents tex2jax_ignore asciimath2jax_ignore']");
         if (elmData == null) {
-            throw new CmsException("build div[class='seq_contents tex2jax_ignore asciimath2jax_ignore'] is NULL!");
+            throw new CmsException("div[class='seq_contents tex2jax_ignore asciimath2jax_ignore'] không tồn tại.");
         }
         //tạo lại document (giải mã đoạn mã hóa)
         document = Jsoup.parse(elmData.text());
         elmData = document.selectFirst("div[class='problems-wrapper']");
         if (elmData == null) {
-            throw new CmsException("build div[class='problems-wrapper'] is NULL!");
+            throw new CmsException("div[class='problems-wrapper'] không tồn tại.");
         }
         //===========================
         Quiz quiz = new Quiz();
@@ -106,7 +105,7 @@ public class QuizRealService implements Runnable {
         //kiểu nhập
         Elements elmsPolyInput = document.select("div[class='poly poly-input']");
         if (elmsPoly.isEmpty() && elmsPolyInput.isEmpty()) {
-            throw new CmsException("buildQuizQuestions div[class='poly'] && div[class='poly poly-input'] is Empty!");
+            throw new CmsException("div[class='poly'] && div[class='poly poly-input'] không có phần tử nào.");
         }
         List<QuizQuestion> alQuizQuestions = new ArrayList<>();
         //xử lý kiểu chọn trước
@@ -155,7 +154,7 @@ public class QuizRealService implements Runnable {
     private static List<String> buildListValueText(Element elmPolyInput) throws CmsException, JsonProcessingException {
         Element elmData = elmPolyInput.selectFirst("div[class='data']");
         if (elmData == null) {
-            throw new CmsException("buildListValueText div[class='data'] is NULL!");
+            throw new CmsException("div[class='data'] không tồn tại.");
         }
         QuizQuestionListDto quizQuestionListDto = MapperUtils.objectMapper.readValue(elmData.text(), QuizQuestionListDto.class);
         return quizQuestionListDto.getQuestions().stream().map(QuizQuestionTextDto::getText).collect(Collectors.toList());
@@ -164,7 +163,7 @@ public class QuizRealService implements Runnable {
     private static List<String> buildListValue(Element elmWrapper) throws CmsException {
         Elements elmsInput = elmWrapper.select("input");
         if (elmsInput.isEmpty()) {
-            throw new CmsException("buildListValue input is empty");
+            throw new CmsException("input[] không tồn tại.");
         }
         return elmsInput.stream().map(element -> element.attr("value")).collect(Collectors.toList());
     }

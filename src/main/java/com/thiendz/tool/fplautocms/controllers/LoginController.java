@@ -49,16 +49,16 @@ public class LoginController implements Runnable {
 
     private void checkValidLoginInput() throws InputException {
         if (cookie.trim().length() == 0) {
-            throw new InputException("cookie input not empty.");
+            throw new InputException("Bạn phải nhập cookie trước khi đăng nhập.");
         }
     }
 
     private void showDashboard() {
         dashboardView.setUser(user);
-        dashboardView.getLbHello().setText("Hello: " + user.getUsername());
+        dashboardView.getLbHello().setText("Xin chào: " + user.getUsername());
         dashboardView.getLbUserId().setText("User ID: " + user.getUser_id());
         dashboardView.getCbbCourse().removeAllItems();
-        dashboardView.getCbbCourse().addItem("Select Course...");
+        dashboardView.getCbbCourse().addItem("Chọn môn học...");
         user.getCourses().forEach(course -> {
             dashboardView.getCbbCourse().addItem(course.getName());
         });

@@ -71,7 +71,7 @@ public class CourseService {
             return quizDto;
         }).collect(Collectors.toList());
         if (quizDtoList.isEmpty()) {
-            throw new CmsException("li[class='outline-item section'] is empty!");
+            throw new CmsException("li[class='outline-item section'] không tồn tại.");
         }
         List<Quiz> quizList = quizDtoList.stream()
                 .map(quizDto -> {

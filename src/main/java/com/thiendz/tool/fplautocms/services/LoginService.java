@@ -51,16 +51,16 @@ public class LoginService {
     private void parseUserInfo() throws CmsException, JsonProcessingException {
         Element elmUserMetaData = document.selectFirst("script[id='user-metadata']");
         if (elmUserMetaData == null) {
-            throw new CmsException("script[id='user-metadata'] is NULL!");
+            throw new CmsException("script[id='user-metadata'] không tồn tại.");
         }
         user = MapperUtils.objectMapper.readValue(elmUserMetaData.html(), User.class);
         if (user.getUser_id() == null) {
-            throw new CmsException("Login fail, Cookie expired.");
+            throw new CmsException("Đăng nhập thất bại, cookie sai hoặc hết hạn.");
         }
         Pattern pattern = Pattern.compile(REGEX_CSRF_TOKEN);
         Matcher matcher = pattern.matcher(cookie);
         if (!matcher.find()) {
-            throw new CmsException("Regex 'csrftoken=(.+?);' is null!");
+            throw new CmsException("Đăng nhập thất bại, không tìm thấy CSRF token.");
         }
         int indexStart = matcher.group().indexOf("=");
         int indexEnd = matcher.group().indexOf(";");
@@ -71,7 +71,7 @@ public class LoginService {
     private void parseCourseInfo() throws CmsException {
         Elements elmsLeanModal = document.select("a[rel='leanModal']");
         if (elmsLeanModal.isEmpty()) {
-            throw new CmsException("buildCourse a[rel='leanModal'] is empty!");
+            throw new CmsException("a[rel='leanModal'] không tồn tại.");
         }
         List<Course> courses = new ArrayList<>();
         for (Element elmLean : elmsLeanModal) {

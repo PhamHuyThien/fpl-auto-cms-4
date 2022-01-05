@@ -79,7 +79,7 @@ public class SolutionService implements Runnable {
                         .setHeader("Referer", quiz.getUrl())
                         .setHeader("Accept", "application/json, text/javascript, */*; q=0.01")
                         .setHeader("Cookie", user.getCookie())
-                        .setHeader("User-Agent", "Hacked By ThienDepTrai.")
+                        .setHeader("User-Agent", "Auto By ThienDepTrai.")
                         .bodyString(buildParam(), ContentType.APPLICATION_FORM_URLENCODED);
                 final String bodyResponseSolution = executor.execute(request)
                         .returnContent()

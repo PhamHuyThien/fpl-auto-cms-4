@@ -62,10 +62,13 @@ public class CourseController implements Runnable {
 
     private void showDashboard() {
         dashboardView.getCbbQuiz().removeAllItems();
-        dashboardView.getCbbQuiz().addItem("Select Quiz...");
+        dashboardView.getCbbQuiz().addItem("Chọn Quiz...");
         course.getQuizList().forEach(quiz -> {
-            dashboardView.getCbbQuiz().addItem(quiz.getName() + " - " + ((int) quiz.getScore()) + "/" + ((int) quiz.getScorePossible()) + " point");
+            String name = quiz.getName();
+            int score = (int) quiz.getScore();
+            int scorePossible = (int) quiz.getScorePossible();
+            dashboardView.getCbbQuiz().addItem(name + " - " + score + "/" + scorePossible + " point");
         });
-        dashboardView.getCbbQuiz().addItem("Auto all quiz");
+        dashboardView.getCbbQuiz().addItem("Auto giải hết quiz");
     }
 }
