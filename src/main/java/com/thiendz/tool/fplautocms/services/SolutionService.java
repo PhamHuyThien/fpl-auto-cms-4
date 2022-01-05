@@ -59,17 +59,17 @@ public class SolutionService implements Runnable {
     public void run() {
         try {
             start();
+            setStatus(1);
         } catch (CmsException ex) {
-            callbackSolution.call(scorePresent, -1);
+            setStatus(-1);
         } catch (IOException ex) {
             ex.printStackTrace();
+            setStatus(-2);
         }
     }
 
     public void start() throws CmsException, IOException {
-        if (isQuizFinished(quiz)) {
-            status = 1;
-            callbackSolution.call(scorePresent, status);
+        if (isQuizFinished()) {
             return;
         }
         resetQuizQuestion();
@@ -99,14 +99,12 @@ public class SolutionService implements Runnable {
                         .asString();
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
                 scorePresent = solutionResponseDto.getCurrent_score();
-                callbackSolution.call(scorePresent, status);
-                updateStatusQuizQuestion(solutionResponseDto.getContents(), quiz);
+                setStatus(0);
+                updateStatusQuizQuestion(solutionResponseDto.getContents());
                 timeTick = DateUtils.getCurrentMilis();
             }
-            ThreadUtils.sleep(100);
-        } while (!isQuizFinished(quiz));
-        status = 1;
-        callbackSolution.call(scorePresent, status);
+            ThreadUtils.sleep(1000);
+        } while (!isQuizFinished());
     }
 
 
@@ -165,7 +163,7 @@ public class SolutionService implements Runnable {
         }
     }
 
-    private void updateStatusQuizQuestion(String body, Quiz quiz) throws CmsException {
+    private void updateStatusQuizQuestion(String body) throws CmsException {
         Document document = Jsoup.parse(body);
         List<QuizQuestion> quizResults = QuizDetailService.buildQuizQuestions(document, true);
         if (!compareKeyQuizQuestion(quiz.getQuizQuestions(), quizResults)) {
@@ -197,7 +195,7 @@ public class SolutionService implements Runnable {
         return value;
     }
 
-    private boolean isQuizFinished(Quiz quiz) {
+    private boolean isQuizFinished() {
         List<QuizQuestion> quizQuestionList = quiz.getQuizQuestions();
         return quizQuestionList.stream()
                 .filter(quizQuestion -> quizQuestion.isCorrect() || quizQuestion.getListValue() == null)
@@ -208,6 +206,11 @@ public class SolutionService implements Runnable {
         for (QuizQuestion quizQuestion : quiz.getQuizQuestions()) {
             quizQuestion.setCorrect(false);
         }
+    }
+
+    private void setStatus(int status) {
+        this.status = status;
+        callbackSolution.call(scorePresent, status, quiz);
     }
 }
 

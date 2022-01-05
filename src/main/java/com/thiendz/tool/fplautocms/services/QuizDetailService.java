@@ -7,6 +7,7 @@ import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionListDto;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionTextDto;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
+import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.Data;
 import org.apache.http.client.HttpClient;
@@ -159,7 +160,10 @@ public class QuizDetailService implements Runnable {
             throw new CmsException("div[class='data'] không tồn tại.");
         }
         QuizQuestionTextDto[] questionTextDtoList = MapperUtils.objectMapper.readValue(elmData.text(), QuizQuestionTextDto[].class);
-        return Stream.of(questionTextDtoList).map(QuizQuestionTextDto::getText).collect(Collectors.toList());
+        return Stream.of(questionTextDtoList)
+                .map(quizQuestionTextDto ->
+                        StringUtils.convertVIToEN(quizQuestionTextDto.getText())
+                ).collect(Collectors.toList());
     }
 
     private static List<String> buildListValue(Element elmWrapper) throws CmsException {

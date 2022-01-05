@@ -49,7 +49,7 @@ public class SolutionController implements Runnable {
                         user.getCourses().get(indexCourse - 1),
                         user.getCourses().get(indexCourse - 1).getQuizList().get(i)
                 );
-                solutionService.setCallbackSolution((scorePresent, status) -> {});
+                solutionService.setCallbackSolution((scorePresent, status, quiz) -> {});
                 cmsSolutionList.add(solutionService);
             }
             ThreadUtils threadUtils = new ThreadUtils(cmsSolutionList, cmsSolutionList.size());
@@ -60,6 +60,7 @@ public class SolutionController implements Runnable {
                 ThreadUtils.sleep(1000);
             } while (threadUtils.isTerminating());
             showProcess(cmsSolutionList, ++sec, true);
+            MsgBoxUtils.alert(dashboardView, Messages.AUTO_SOLUTION_FINISH);
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, e.toString());
         }

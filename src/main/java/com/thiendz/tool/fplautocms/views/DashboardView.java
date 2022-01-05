@@ -10,6 +10,8 @@ import com.thiendz.tool.fplautocms.controllers.ContactController;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.awt.*;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class DashboardView extends javax.swing.JFrame {
@@ -48,20 +50,20 @@ public class DashboardView extends javax.swing.JFrame {
         btnContact = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("AUTO CMS v" + FplAutoCmsMain.APP_VER + "  - 10 Quiz 10 Point Easy!");
+        setTitle(FplAutoCmsMain.APP_NAME + " v" + FplAutoCmsMain.APP_VER + " - " + FplAutoCmsMain.APP_SLOGAN);
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lbTitle.setFont(new java.awt.Font("Consolas", 1, 36)); // NOI18N
+        lbTitle.setFont(new java.awt.Font("Consolas", Font.BOLD, 36)); // NOI18N
         lbTitle.setForeground(new java.awt.Color(0, 204, 204));
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitle.setText("FPL@utoCMS");
+        lbTitle.setText(FplAutoCmsMain.APP_NAME);
 
-        lbSlogan.setFont(new java.awt.Font("Consolas", 1, 14)); // NOI18N
+        lbSlogan.setFont(new java.awt.Font("Consolas", Font.BOLD, 14)); // NOI18N
         lbSlogan.setForeground(new java.awt.Color(0, 51, 255));
         lbSlogan.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSlogan.setText("Version " + FplAutoCmsMain.APP_VER + " - 10 Quiz 10 Point Easy!");
+        lbSlogan.setText("Version " + FplAutoCmsMain.APP_VER + " - "+FplAutoCmsMain.APP_SLOGAN);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -84,17 +86,13 @@ public class DashboardView extends javax.swing.JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Đăng nhập bằng cookie:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 0, 11))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Đăng nhập bằng cookie:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", Font.PLAIN, 11))); // NOI18N
 
-        tfCookie.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        tfCookie.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
 
-        btnLogin.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        btnLogin.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         btnLogin.setText("Đăng nhập");
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
+        btnLogin.addActionListener(this::btnLoginActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -116,22 +114,18 @@ public class DashboardView extends javax.swing.JFrame {
                                 .addContainerGap())
         );
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{btnLogin, tfCookie});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, btnLogin, tfCookie);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Giải bài:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 0, 11))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Giải bài:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", Font.PLAIN, 11))); // NOI18N
 
-        btnSolution.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        btnSolution.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         btnSolution.setText("Tự động giải bài");
         btnSolution.setEnabled(false);
-        btnSolution.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSolutionActionPerformed(evt);
-            }
-        });
+        btnSolution.addActionListener(this::btnSolutionActionPerformed);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lbProcess.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        lbProcess.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         lbProcess.setForeground(new java.awt.Color(0, 153, 0));
         lbProcess.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbProcess.setText("<html><center>.....................................<br>Thiên Đẹp Traii is the best!<br>.....................................<html>");
@@ -152,10 +146,10 @@ public class DashboardView extends javax.swing.JFrame {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lbHello.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        lbHello.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         lbHello.setText("Hi:.................");
 
-        lbUserId.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        lbUserId.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         lbUserId.setText("User ID:..............");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -181,20 +175,16 @@ public class DashboardView extends javax.swing.JFrame {
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel7Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[]{lbHello, lbUserId});
+        jPanel7Layout.linkSize(javax.swing.SwingConstants.VERTICAL, lbHello, lbUserId);
 
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        cbbCourse.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        cbbCourse.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         cbbCourse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Chọn môn học..."}));
         cbbCourse.setEnabled(false);
-        cbbCourse.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbbCourseActionPerformed(evt);
-            }
-        });
+        cbbCourse.addActionListener(this::cbbCourseActionPerformed);
 
-        cbbQuiz.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        cbbQuiz.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         cbbQuiz.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Chọn Quiz..."}));
         cbbQuiz.setEnabled(false);
 
@@ -210,7 +200,7 @@ public class DashboardView extends javax.swing.JFrame {
                                 .addContainerGap())
         );
 
-        jPanel8Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[]{cbbCourse, cbbQuiz});
+        jPanel8Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, cbbCourse, cbbQuiz);
 
         jPanel8Layout.setVerticalGroup(
                 jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -253,18 +243,14 @@ public class DashboardView extends javax.swing.JFrame {
                                 .addContainerGap())
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Liên hệ:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 0, 11))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Liên hệ:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", Font.PLAIN, 11))); // NOI18N
 
-        lbInfo.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        lbInfo.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         lbInfo.setText("AutoCMS - Code By ThienDepZaii - SystemError");
 
-        btnContact.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
+        btnContact.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         btnContact.setText("Liên hệ tôi");
-        btnContact.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnContactActionPerformed(evt);
-            }
-        });
+        btnContact.addActionListener(this::btnContactActionPerformed);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -336,7 +322,7 @@ public class DashboardView extends javax.swing.JFrame {
     public void showProcess(String s) {
         String line = ".....................................";
         String br = "<br>";
-        String[] splLine = s.split("\\#\\#");
+        String[] splLine = s.split("##");
         String show = "<html><center>";
         if (splLine.length == 1) {
             show += line + br + splLine[0] + br + line;
