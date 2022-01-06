@@ -20,10 +20,6 @@ public class Quiz implements Comparable<Quiz> {
     private double scorePossible;
     private List<QuizQuestion> quizQuestions;
 
-    public Quiz(String url) {
-        this.url = url;
-    }
-
     @Override
     public int compareTo(Quiz quiz) {
         if (quiz == null) {

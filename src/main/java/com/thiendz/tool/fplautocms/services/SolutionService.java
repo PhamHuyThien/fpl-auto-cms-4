@@ -7,6 +7,7 @@ import com.thiendz.tool.fplautocms.models.QuizQuestion;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.dto.SolutionResponseDto;
 import com.thiendz.tool.fplautocms.utils.*;
+import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
@@ -17,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class SolutionService implements Runnable {
@@ -93,7 +95,7 @@ public class SolutionService implements Runnable {
                         .setHeader("Accept", "application/json, text/javascript, */*; q=0.01")
                         .setHeader("Cookie", user.getCookie())
                         .setHeader("User-Agent", "Auto By ThienDepTrai.")
-                        .bodyString(buildParam(), ContentType.APPLICATION_FORM_URLENCODED);
+                        .bodyString(buildParam(), ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8));
                 final String bodyResponseSolution = executor.execute(request)
                         .returnContent()
                         .asString();
@@ -130,35 +132,35 @@ public class SolutionService implements Runnable {
         if (quizQuestion.isCorrect()) {
             return quizQuestion.getSelectValue();
         }
+        String keyEncrypt = StringUtils.URLEncoder(quizQuestion.getKey());
         if (quizQuestion.isMultiChoice()) {
+            StringBuilder value = new StringBuilder();
             List<List<Integer>> alInt;
-            if (quizQuestion.getType().equals("text")) {
+            if (quizQuestion.getType() == QuizQuestionType.TEXT) {
                 alInt = new Permutation(quizQuestion.getAmountInput(), quizQuestion.getListValue().size()).getResult();
             } else {
                 alInt = new Combination(2, quizQuestion.getListValue().size(), true).getResult();
             }
-
-            StringBuilder value = new StringBuilder();
             int index = quizQuestion.getTestCount();
             if (index >= alInt.size()) {
-                throw new CmsException("setValue ArrayIndexOutOfBound alInt!");
+                throw new CmsException("ArrayIndexOutOfBound alInt!");
             }
-            if (quizQuestion.getType().equals("text")) {
-                value.append(quizQuestion.getKey()).append("=");
+            if (quizQuestion.getType() == QuizQuestionType.TEXT) {
+                value.append(keyEncrypt).append("=");
             }
             alInt.get(index).forEach((i) -> {
-                if (quizQuestion.getType().equals("text")) {
-                    value.append(StringUtils.URLEncoder(quizQuestion.getListValue().get(i))).append("%2C");
+                String valueEncrypt = StringUtils.URLEncoder(quizQuestion.getListValue().get(i));
+                if (quizQuestion.getType() == QuizQuestionType.TEXT) {
+                    value.append(valueEncrypt).append("%2C");
                 } else {
-                    value.append(StringUtils.URLEncoder(quizQuestion.getKey())).append("=").append(StringUtils.URLEncoder(quizQuestion.getListValue().get(i))).append("&");
+                    value.append(keyEncrypt).append("=").append(valueEncrypt).append("&");
                 }
             });
             return makeUpValue(value.toString());
         } else {
             List<String> choiceList = quizQuestion.getListValue();
-            String key = StringUtils.URLEncoder(quizQuestion.getKey());
-            String value = StringUtils.URLEncoder(choiceList.get(quizQuestion.getTestCount()));
-            String res = key + "=" + value + "&";
+            String valueEncrypt = StringUtils.URLEncoder(choiceList.get(quizQuestion.getTestCount()));
+            String res = keyEncrypt + "=" + valueEncrypt + "&";
             return makeUpValue(res);
         }
     }

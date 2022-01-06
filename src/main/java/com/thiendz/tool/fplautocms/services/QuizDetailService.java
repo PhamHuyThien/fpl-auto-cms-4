@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thiendz.tool.fplautocms.models.Quiz;
 import com.thiendz.tool.fplautocms.models.QuizQuestion;
 import com.thiendz.tool.fplautocms.models.User;
-import com.thiendz.tool.fplautocms.dto.QuizQuestionListDto;
 import com.thiendz.tool.fplautocms.dto.QuizQuestionTextDto;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
+import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.Data;
 import org.apache.http.client.HttpClient;
@@ -89,8 +89,8 @@ public class QuizDetailService implements Runnable {
         double score = Double.parseDouble(elmData.attr("data-problem-score"));
         quiz.setScore(score);
         //set score posible
-        double scorePosible = Double.parseDouble(elmData.attr("data-problem-total-possible"));
-        quiz.setScorePossible(scorePosible);
+        double scorePossible = Double.parseDouble(elmData.attr("data-problem-total-possible"));
+        quiz.setScorePossible(scorePossible);
         //set QuizQuestion
         String content = elmData.attr("data-content");
         document = Jsoup.parse(content);
@@ -113,34 +113,34 @@ public class QuizDetailService implements Runnable {
         List<QuizQuestion> alQuizQuestions = new ArrayList<>();
         //xử lý kiểu chọn trước
         for (Element elmPoly : elmsPoly) {
-            Element elmWraper = elmPoly.nextElementSibling();
+            Element elmWrapper = elmPoly.nextElementSibling();
             //
             QuizQuestion quizQuestion = new QuizQuestion();
             quizQuestion.setName(Objects.requireNonNull(elmPoly.selectFirst("h3")).text());
-            assert elmWraper != null;
-            quizQuestion.setType(Objects.requireNonNull(elmWraper.selectFirst("input")).attr("type").equals("radio") ? "radio" : "checkbox");
+            assert elmWrapper != null;
+            quizQuestion.setType(Objects.requireNonNull(elmWrapper.selectFirst("input")).attr("type").equals("radio") ? QuizQuestionType.RADIO : QuizQuestionType.CHECKBOX);
             quizQuestion.setQuestion(Objects.requireNonNull(elmPoly.selectFirst("pre[class='poly-body']")).text());
-            quizQuestion.setKey(Objects.requireNonNull(elmWraper.selectFirst("input")).attr("name"));
+            quizQuestion.setKey(Objects.requireNonNull(elmWrapper.selectFirst("input")).attr("name"));
             try {
-                quizQuestion.setListValue(buildListValue(elmWraper));
+                quizQuestion.setListValue(buildListValue(elmWrapper));
             } catch (CmsException e) {
                 continue;
             }
             quizQuestion.setAmountInput(-1);
-            quizQuestion.setMultiChoice(quizQuestion.getType().equals("checkbox"));
-            quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWraper.selectFirst("span[class='sr']")).text().equals("correct"));
+            quizQuestion.setMultiChoice(quizQuestion.getType() == QuizQuestionType.CHECKBOX);
+            quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
             alQuizQuestions.add(quizQuestion);
         }
         //xử lý kiểu text sau
         for (Element elmPolyInput : elmsPolyInput) {
-            Element elmWraper = elmPolyInput.nextElementSibling();
+            Element elmWrapper = elmPolyInput.nextElementSibling();
 
             QuizQuestion quizQuestion = new QuizQuestion();
             quizQuestion.setName(Objects.requireNonNull(elmPolyInput.selectFirst("h3")).text());
-            quizQuestion.setType("text");
+            quizQuestion.setType(QuizQuestionType.TEXT);
             quizQuestion.setQuestion(Objects.requireNonNull(elmPolyInput.selectFirst("pre")).text());
-            assert elmWraper != null;
-            quizQuestion.setKey(Objects.requireNonNull(elmWraper.selectFirst("input")).attr("name"));
+            assert elmWrapper != null;
+            quizQuestion.setKey(Objects.requireNonNull(elmWrapper.selectFirst("input")).attr("name"));
             try {
                 quizQuestion.setListValue(buildListValueText(elmPolyInput));
             } catch (CmsException | NullPointerException | JsonProcessingException e) {
@@ -148,7 +148,7 @@ public class QuizDetailService implements Runnable {
             }
             quizQuestion.setAmountInput(elmPolyInput.select("input").size());
             quizQuestion.setMultiChoice(quizQuestion.getAmountInput() > 1);
-            quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWraper.selectFirst("span[class='sr']")).text().equals("correct"));
+            quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
             alQuizQuestions.add(quizQuestion);
         }
         return alQuizQuestions;
@@ -161,9 +161,8 @@ public class QuizDetailService implements Runnable {
         }
         QuizQuestionTextDto[] questionTextDtoList = MapperUtils.objectMapper.readValue(elmData.text(), QuizQuestionTextDto[].class);
         return Stream.of(questionTextDtoList)
-                .map(quizQuestionTextDto ->
-                        StringUtils.convertVIToEN(quizQuestionTextDto.getText())
-                ).collect(Collectors.toList());
+                .map(quizQuestionTextDto -> StringUtils.convertVIToEN(quizQuestionTextDto.getText()))
+                .collect(Collectors.toList());
     }
 
     private static List<String> buildListValue(Element elmWrapper) throws CmsException {

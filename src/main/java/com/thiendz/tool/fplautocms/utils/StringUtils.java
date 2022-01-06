@@ -22,23 +22,21 @@ public class StringUtils {
         try {
             String temp = Normalizer.normalize(str, Normalizer.Form.NFD);
             Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-            return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll(" ", "-").replaceAll("đ", "d");
-        } catch (Exception ex) {
+            return pattern.matcher(temp)
+                    .replaceAll("")
+                    .toLowerCase()
+                    .replaceAll(" ", "-")
+                    .replaceAll("đ", "d");
+        } catch (Exception ignored) {
         }
         return "";
     }
 
-    public static void sleep(long sleep) {
-        try {
-            Thread.sleep(sleep);
-        } catch (InterruptedException ex) {
-        }
-    }
     public static String URLEncoder(String url) {
         String encoder = null;
         try {
             encoder = URLEncoder.encode(url, "UTF-8");
-        } catch (UnsupportedEncodingException  e) {
+        } catch (UnsupportedEncodingException ignored) {
         }
         return encoder;
     }

@@ -63,7 +63,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbSlogan.setFont(new java.awt.Font("Consolas", Font.BOLD, 14)); // NOI18N
         lbSlogan.setForeground(new java.awt.Color(0, 51, 255));
         lbSlogan.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSlogan.setText("Version " + FplAutoCmsMain.APP_VER + " - "+FplAutoCmsMain.APP_SLOGAN);
+        lbSlogan.setText("Version " + FplAutoCmsMain.APP_VER + " - " + FplAutoCmsMain.APP_SLOGAN);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -246,7 +246,7 @@ public class DashboardView extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Liên hệ:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", Font.PLAIN, 11))); // NOI18N
 
         lbInfo.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
-        lbInfo.setText("AutoCMS - Code By ThienDepZaii - SystemError");
+        lbInfo.setText(FplAutoCmsMain.APP_NAME + " - Code By " + FplAutoCmsMain.APP_AUTHOR + " - " + FplAutoCmsMain.APP_NICKNAME);
 
         btnContact.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         btnContact.setText("Liên hệ tôi");

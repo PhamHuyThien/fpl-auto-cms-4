@@ -33,7 +33,7 @@ public class Permutation {
         if (build) {
             return;
         }
-        build = !build;
+        build = true;
         init();
         for (int i = k; i <= (allResult ? n : k); i++) {
             boolean[] check = createBoolArrayTrue(n);
@@ -42,7 +42,7 @@ public class Permutation {
         }
     }
 
-    private void permutation(int k, int n, int arr[], int i, boolean check[]) {
+    private void permutation(int k, int n, int[] arr, int i, boolean[] check) {
         for (int j = 0; j < n; j++) {
             if (check[j]) {
                 arr[i] = j;
@@ -63,7 +63,7 @@ public class Permutation {
     }
 
     private static boolean[] createBoolArrayTrue(int count) {
-        boolean bool[] = new boolean[count];
+        boolean[] bool = new boolean[count];
         for (int i = 0; i < count; i++) {
             bool[i] = true;
         }

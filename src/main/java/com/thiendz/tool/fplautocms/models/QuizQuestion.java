@@ -1,6 +1,7 @@
 package com.thiendz.tool.fplautocms.models;
 
 
+import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @ToString
 public class QuizQuestion {
     private String name;
-    private String type; // [text, checkbox, radio]
+    private QuizQuestionType type;
     private String question;
     private String key; //key request
     private List<String> listValue;// value request

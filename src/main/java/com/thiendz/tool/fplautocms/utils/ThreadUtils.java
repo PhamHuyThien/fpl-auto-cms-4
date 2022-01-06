@@ -9,7 +9,7 @@ public class ThreadUtils extends ThreadPoolExecutor {
 
     private boolean exec;
     private boolean stopExecute;
-    private List<? extends Runnable> runnableList;
+    private final List<? extends Runnable> runnableList;
 
     public ThreadUtils(List<? extends Runnable> runnableList, int maxThread) {
         super(maxThread, maxThread, 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000000));
@@ -35,7 +35,7 @@ public class ThreadUtils extends ThreadPoolExecutor {
     public void await() {
         try {
             awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -50,7 +50,7 @@ public class ThreadUtils extends ThreadPoolExecutor {
     public static void sleep(long time) {
         try {
             Thread.sleep(time);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
     }
 }

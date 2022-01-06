@@ -39,7 +39,7 @@ public class LoginController implements Runnable {
             this.user = loginService.getUser();
             showDashboard();
             dashboardView.getCbbCourse().setEnabled(true);
-            dashboardView.showProcess("Đăng nhập thành công.");
+            dashboardView.showProcess(Messages.LOGIN_SUCCESS);
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, Messages.INVALID_INPUT + e);
         } catch (IOException e) {

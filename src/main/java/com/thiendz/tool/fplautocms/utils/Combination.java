@@ -35,7 +35,7 @@ public class Combination {
         build = !build;
         initCombination();
         for (int i = k; i <= (allResult ? n : k); i++) {
-            int arrTmp[] = createTmpArrCombination(i + 1);
+            int[] arrTmp = createTmpArrCombination(i + 1);
             combination(i, n, 1, arrTmp);
         }
     }
@@ -60,23 +60,11 @@ public class Combination {
     }
 
     private static int[] createTmpArrCombination(int count) {
-        int resInt[] = new int[count];
+        int[] resInt = new int[count];
         for (int i = 0; i < count; i++) {
             resInt[i] = 0;
         }
         return resInt;
     }
 
-    private static int countCombination(int k, int n) {
-        return factorial(n) / (factorial(k) * factorial(n - k));
-    }
-
-    //hỗ trợ combination
-    private static int factorial(int n) {
-        int tmp = 1;
-        for (int i = n; i > 1; i--) {
-            tmp *= i;
-        }
-        return tmp;
-    }
 }
