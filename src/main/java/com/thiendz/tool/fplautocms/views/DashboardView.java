@@ -9,9 +9,11 @@ import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.controllers.ContactController;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 
+@Slf4j
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class DashboardView extends javax.swing.JFrame {

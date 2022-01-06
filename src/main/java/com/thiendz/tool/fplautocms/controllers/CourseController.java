@@ -8,9 +8,11 @@ import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public class CourseController implements Runnable {
 
     private final DashboardView dashboardView;
@@ -51,14 +53,18 @@ public class CourseController implements Runnable {
                     dashboardView.getCbbQuiz().setEnabled(true);
                     dashboardView.getBtnSolution().setEnabled(true);
                     dashboardView.getCbbQuiz().setSelectedIndex(dashboardView.getCbbQuiz().getItemCount() - 1);
+                    log.info(course.toString());
                 } catch (InputException e) {
+                    log.info(e.toString());
                     return;
                 } catch (IOException e) {
+                    log.info(e.toString());
                     MsgBoxUtils.alert(dashboardView, Messages.CONNECT_ERROR);
                 } catch (CmsException e) {
+                    log.info(e.toString());
                     MsgBoxUtils.alert(dashboardView, e.toString());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.info(e.toString());
                     MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
                 }
                 dashboardView.getTfCookie().setEnabled(true);

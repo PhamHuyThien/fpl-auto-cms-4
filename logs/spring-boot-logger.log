@@ -1,0 +1,2 @@
+2022-01-06 22:44:01,220 INFO com.thiendz.tool.fplautocms.services.LoginService [Thread-2] Request GET: https://cms.poly.edu.vn/dashboard/
+2022-01-06 22:44:01,443 ERROR com.thiendz.tool.fplautocms.controllers.LoginController [Thread-2] Đăng nhập thất bại, cookie sai hoặc hết hạn.

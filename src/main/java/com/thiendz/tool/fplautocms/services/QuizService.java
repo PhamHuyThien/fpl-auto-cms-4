@@ -7,6 +7,7 @@ import com.thiendz.tool.fplautocms.dto.QuizDto;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.ThreadUtils;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class QuizService {
     private static final String CMS_QUIZ_BASE = "https://cms.poly.edu.vn/courses/%s/course/";
     private static final String REGEX_CHAPTER_BLOCK = "chapter\\+block\\@([a-z0-9]+?)_contents";
@@ -49,6 +51,7 @@ public class QuizService {
 
     private void parseQuizBase() throws IOException, CmsException {
         final String url = String.format(CMS_QUIZ_BASE, course.getId());
+        log.info("Request GET: {}", url);
         final HttpClient client = HttpClientBuilder.create()
                 .disableRedirectHandling()
                 .build();

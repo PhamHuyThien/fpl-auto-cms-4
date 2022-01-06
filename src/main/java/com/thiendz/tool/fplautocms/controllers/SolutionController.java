@@ -42,7 +42,7 @@ public class SolutionController implements Runnable {
                 start = 0;
                 end = indexQuiz - 2;
             }
-            List<SolutionService> cmsSolutionList = new ArrayList<>();
+            List<SolutionService> solutionServiceList = new ArrayList<>();
             for (int i = start; i <= end; i++) {
                 SolutionService solutionService = new SolutionService(
                         user,
@@ -50,16 +50,16 @@ public class SolutionController implements Runnable {
                         user.getCourses().get(indexCourse - 1).getQuizList().get(i)
                 );
                 solutionService.setCallbackSolution((scorePresent, status, quiz) -> {});
-                cmsSolutionList.add(solutionService);
+                solutionServiceList.add(solutionService);
             }
-            ThreadUtils threadUtils = new ThreadUtils(cmsSolutionList, cmsSolutionList.size());
+            ThreadUtils threadUtils = new ThreadUtils(solutionServiceList, solutionServiceList.size());
             threadUtils.execute();
             int sec = 0;
             do {
-                showProcess(cmsSolutionList, ++sec, false);
+                showProcess(solutionServiceList, ++sec, false);
                 ThreadUtils.sleep(1000);
             } while (threadUtils.isTerminating());
-            showProcess(cmsSolutionList, ++sec, true);
+            showProcess(solutionServiceList, ++sec, true);
             MsgBoxUtils.alert(dashboardView, Messages.AUTO_SOLUTION_FINISH);
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, e.toString());

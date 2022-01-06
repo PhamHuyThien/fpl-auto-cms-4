@@ -5,6 +5,7 @@ import com.thiendz.tool.fplautocms.models.Course;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.fluent.Request;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class LoginService {
     private static final String CMS_URL_DASHBOARD = "https://cms.poly.edu.vn/dashboard/";
     private static final String REGEX_CSRF_TOKEN = "csrftoken=(.+?);";
@@ -45,6 +47,7 @@ public class LoginService {
                 .execute()
                 .returnContent()
                 .asString();
+        log.info("Request GET: {}", CMS_URL_DASHBOARD);
         document = Jsoup.parse(bodyDash);
     }
 

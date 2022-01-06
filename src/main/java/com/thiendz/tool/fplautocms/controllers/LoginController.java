@@ -7,9 +7,11 @@ import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public class LoginController implements Runnable {
     private final DashboardView dashboardView;
     private final String cookie;
@@ -40,14 +42,19 @@ public class LoginController implements Runnable {
             showDashboard();
             dashboardView.getCbbCourse().setEnabled(true);
             dashboardView.showProcess(Messages.LOGIN_SUCCESS);
+            log.info(loginService.getUser().toString());
         } catch (InputException e) {
+            log.error(e.toString());
             MsgBoxUtils.alert(dashboardView, Messages.INVALID_INPUT + e);
         } catch (IOException e) {
+            log.error(e.toString());
             e.printStackTrace();
             MsgBoxUtils.alert(dashboardView, Messages.CONNECT_ERROR);
         } catch (CmsException e) {
+            log.error(e.toString());
             MsgBoxUtils.alert(dashboardView, e.toString());
         } catch (Exception e) {
+            log.error(e.toString());
             MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
         }
         dashboardView.getTfCookie().setEnabled(true);

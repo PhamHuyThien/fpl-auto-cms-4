@@ -10,6 +10,7 @@ import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -26,7 +27,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Data
+@Slf4j
 public class QuizDetailService implements Runnable {
 
     private final User user;
@@ -37,13 +38,19 @@ public class QuizDetailService implements Runnable {
         this.quiz = quiz;
     }
 
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
     @Override
     public void run() {
         try {
             filter();
+            log.info("Request GET: {}", quiz.getUrl());
+            log.info(quiz.toString());
         } catch (Exception ex) {
             this.quiz = null;
-            ex.printStackTrace();
+            log.error(ex.toString());
         }
     }
 
@@ -143,7 +150,7 @@ public class QuizDetailService implements Runnable {
             quizQuestion.setKey(Objects.requireNonNull(elmWrapper.selectFirst("input")).attr("name"));
             try {
                 quizQuestion.setListValue(buildListValueText(elmPolyInput));
-            } catch (CmsException | NullPointerException | JsonProcessingException e) {
+            } catch (CmsException | JsonProcessingException e) {
                 //not continue;
             }
             quizQuestion.setAmountInput(elmPolyInput.select("input").size());

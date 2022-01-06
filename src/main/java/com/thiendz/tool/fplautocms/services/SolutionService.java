@@ -9,9 +9,12 @@ import com.thiendz.tool.fplautocms.dto.SolutionResponseDto;
 import com.thiendz.tool.fplautocms.utils.*;
 import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
@@ -21,6 +24,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Slf4j
 public class SolutionService implements Runnable {
 
     private static final String URL_POST_BASE = "https://cms.poly.edu.vn/courses/%s/xblock/%s+type@problem+block@%s/handler/xmodule_handler/problem_check";
@@ -62,11 +66,8 @@ public class SolutionService implements Runnable {
         try {
             start();
             setStatus(1);
-        } catch (CmsException ex) {
+        } catch (CmsException | IOException ex) {
             setStatus(-1);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            setStatus(-2);
         }
     }
 
@@ -85,25 +86,27 @@ public class SolutionService implements Runnable {
         long timeTick = 0;
         do {
             if (DateUtils.getCurrentMilis() - timeTick > TIME_SLEEP_SOLUTION) {
+                String bodyParam = buildParam();
                 final HttpClient client = HttpClientBuilder.create()
                         .disableRedirectHandling()
                         .build();
-                final Executor executor = Executor.newInstance(client);
-                final Request request = Request.Post(url)
+                Executor executor = Executor.newInstance(client);
+                Request request = Request.Post(url)
                         .setHeader("X-CSRFToken", user.getCsrf_token())
                         .setHeader("Referer", quiz.getUrl())
                         .setHeader("Accept", "application/json, text/javascript, */*; q=0.01")
                         .setHeader("Cookie", user.getCookie())
                         .setHeader("User-Agent", "Auto By ThienDepTrai.")
-                        .bodyString(buildParam(), ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8));
-                final String bodyResponseSolution = executor.execute(request)
-                        .returnContent()
-                        .asString();
+                        .bodyString(bodyParam, ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8));
+                String bodyResponseSolution = executor.execute(request).returnContent().asString();
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
                 scorePresent = solutionResponseDto.getCurrent_score();
-                setStatus(0);
                 updateStatusQuizQuestion(solutionResponseDto.getContents());
+                setStatus(0);
                 timeTick = DateUtils.getCurrentMilis();
+                log.info("Request POST: {}", url);
+                log.info("Request Send: {}", bodyParam);
+                log.info("Response: {}", bodyResponseSolution);
             }
             ThreadUtils.sleep(1000);
         } while (!isQuizFinished());
