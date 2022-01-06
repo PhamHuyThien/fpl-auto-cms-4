@@ -49,7 +49,6 @@ public class SolutionController implements Runnable {
                         user.getCourses().get(indexCourse - 1),
                         user.getCourses().get(indexCourse - 1).getQuizList().get(i)
                 );
-                solutionService.setCallbackSolution((scorePresent, status, quiz) -> {});
                 solutionServiceList.add(solutionService);
             }
             ThreadUtils threadUtils = new ThreadUtils(solutionServiceList, solutionServiceList.size());
@@ -74,13 +73,15 @@ public class SolutionController implements Runnable {
     private void checkValidInput() throws InputException {
         if (indexQuiz < 1)
             throw new InputException(Messages.YOU_CHOOSE_QUIZ);
+
     }
 
     private void showProcess(List<SolutionService> solutionServiceList, int time, boolean finish) {
         int len = solutionServiceList.size();
         String timeStr = DateUtils.toStringDate(time);
-        String content = finish ? " - " + len + " Quiz thành công!" : "...";
-        StringBuilder show = new StringBuilder("Đang giải " + timeStr + content + "##");
+        String solution = finish ? "Giải hoàn tất mất " : "Đang giải ";
+        String content = finish ? " - " + len + " quiz hoàn thành!" : "...";
+        StringBuilder show = new StringBuilder(solution + timeStr + content + "##");
         for (SolutionService solutionService : solutionServiceList) {
             int quizNum = NumberUtils.getInt(solutionService.getQuiz().getName());
             String name = quizNum != -1 ? quizNum + ":" : "FT:";
@@ -98,7 +99,7 @@ public class SolutionController implements Runnable {
             }
             show.append(score);
         }
-        show = new StringBuilder(show.substring(0, show.length() - 3));
-        dashboardView.showProcess(show.toString());
+        String newLn = solutionServiceList.size() > 1 ? "## " : "";
+        dashboardView.showProcess(show.substring(0, show.length() - 3) + newLn);
     }
 }

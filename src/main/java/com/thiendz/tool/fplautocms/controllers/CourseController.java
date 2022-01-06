@@ -52,7 +52,6 @@ public class CourseController implements Runnable {
                     dashboardView.getUser().getCourses().set(courseSelectedIndex - 1, course);
                     dashboardView.getCbbQuiz().setEnabled(true);
                     dashboardView.getBtnSolution().setEnabled(true);
-                    dashboardView.getCbbQuiz().setSelectedIndex(dashboardView.getCbbQuiz().getItemCount() - 1);
                     log.info(course.toString());
                 } catch (InputException e) {
                     log.info(e.toString());
@@ -93,7 +92,9 @@ public class CourseController implements Runnable {
                 int scorePossible = (int) quiz.getScorePossible();
                 dashboardView.getCbbQuiz().addItem(name + " - " + score + "/" + scorePossible + " point");
             });
-            dashboardView.getCbbQuiz().addItem("Auto giải " + course.getQuizList().size() + " quiz");
+            String autoSolutionAll = "Auto giải " + course.getQuizList().size() + " quiz (VIP)";
+            dashboardView.getCbbQuiz().addItem(autoSolutionAll);
+            dashboardView.getCbbQuiz().setSelectedItem(autoSolutionAll);
         }
     }
 }

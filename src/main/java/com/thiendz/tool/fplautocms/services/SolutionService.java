@@ -10,11 +10,9 @@ import com.thiendz.tool.fplautocms.utils.*;
 import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
@@ -43,6 +41,9 @@ public class SolutionService implements Runnable {
         this.user = user;
         this.course = course;
         this.quiz = quiz;
+        this.scorePresent = quiz.getScore();
+        this.callbackSolution = ((scorePresent, status, quiz1) -> {
+        });
     }
 
     public Quiz getQuiz() {
@@ -66,15 +67,18 @@ public class SolutionService implements Runnable {
         try {
             start();
             setStatus(1);
-        } catch (CmsException | IOException ex) {
+            log.info("Quiz [{}] - score: [{}] solution finish.", quiz.getName(), scorePresent);
+        } catch (CmsException | IOException | NullPointerException ex) {
             setStatus(-1);
+            log.error("Solution error: {}", ex.toString());
         }
     }
 
-    public void start() throws CmsException, IOException {
+    public void start() throws CmsException, IOException, NullPointerException {
         if (isQuizFinished()) {
             return;
         }
+        long timeTick = 0;
         resetQuizQuestion();
         final String url = String.format(
                 URL_POST_BASE,
@@ -82,8 +86,6 @@ public class SolutionService implements Runnable {
                 course.getId().replace("course", "block"),
                 quiz.getQuizQuestions().get(0).getKey().split("_")[1]
         );
-        scorePresent = quiz.getScore();
-        long timeTick = 0;
         do {
             if (DateUtils.getCurrentMilis() - timeTick > TIME_SLEEP_SOLUTION) {
                 String bodyParam = buildParam();
@@ -102,11 +104,13 @@ public class SolutionService implements Runnable {
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
                 scorePresent = solutionResponseDto.getCurrent_score();
                 updateStatusQuizQuestion(solutionResponseDto.getContents());
-                setStatus(0);
-                timeTick = DateUtils.getCurrentMilis();
+                log.info("Quiz: {}", quiz.getName());
                 log.info("Request POST: {}", url);
                 log.info("Request Send: {}", bodyParam);
                 log.info("Response: {}", bodyResponseSolution);
+                log.info("Score: {}", scorePresent);
+                timeTick = DateUtils.getCurrentMilis();
+                setStatus(0);
             }
             ThreadUtils.sleep(1000);
         } while (!isQuizFinished());
@@ -202,9 +206,11 @@ public class SolutionService implements Runnable {
 
     private boolean isQuizFinished() {
         List<QuizQuestion> quizQuestionList = quiz.getQuizQuestions();
-        return quizQuestionList.stream()
+        boolean maxScore = (quiz.getScore() == quiz.getScorePossible() && quiz.getScore() != 0);
+        boolean quizFinish = quizQuestionList.stream()
                 .filter(quizQuestion -> quizQuestion.isCorrect() || quizQuestion.getListValue() == null)
                 .count() == quizQuestionList.size();
+        return maxScore || quizFinish;
     }
 
     private void resetQuizQuestion() {
