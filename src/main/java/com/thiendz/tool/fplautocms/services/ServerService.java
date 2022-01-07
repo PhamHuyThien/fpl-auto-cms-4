@@ -1,6 +1,5 @@
 package com.thiendz.tool.fplautocms.services;
 
-import com.thiendz.tool.fplautocms.FplAutoCmsMain;
 import com.thiendz.tool.fplautocms.dto.CheckAppDto;
 import com.thiendz.tool.fplautocms.dto.CourseSafetyDto;
 import com.thiendz.tool.fplautocms.dto.CourseSafetyResponseDto;
@@ -12,6 +11,7 @@ import com.thiendz.tool.fplautocms.models.Version;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
@@ -51,7 +51,7 @@ public class ServerService {
 
         CourseSafetyResponseDto courseSafetyResponseDto = MapperUtils.objectMapper.readValue(body, CourseSafetyResponseDto.class);
         if (courseSafetyResponseDto.getStatus() == 0)
-            throw new CmsException("Có lỗi xảy ra trong quá trình xử lý.");
+            throw new CmsException(Messages.AN_ERROR_OCCURRED);
         return courseSafetyResponseDto.getData();
     }
 
@@ -95,7 +95,7 @@ public class ServerService {
     public void init() throws IOException, CmsException {
 
         String url = SERVER_API + "?c=get-tool-info";
-        String send = "name=" + FplAutoCmsMain.APP_NAME;
+        String send = "name=" + Messages.APP_NAME;
 
         String body = postRequest(url, send);
 
@@ -106,12 +106,12 @@ public class ServerService {
         CheckAppDto checkAppDto = MapperUtils.objectMapper.readValue(body, CheckAppDto.class);
 
         if (checkAppDto.getStatus() == 0)
-            throw new CmsException("Tool đang được bảo trì, quay lại sau nhé!");
+            throw new CmsException(Messages.TOOL_MAINTAIN);
 
-        String strVerOld = FplAutoCmsMain.APP_VER;
+        String strVerOld = Messages.APP_VER;
         String strVerNew = checkAppDto.getData().getVersion();
         if (new Version(strVerNew).compareTo(new Version(strVerOld)) > 0)
-            throw new CmsException("FPLAutoCMS v" + strVerOld + " đã lỗi thời!\nĐã có phiên bản v" + strVerNew + "!\nTruy cập " + SERVER_ADDRESS + " để tải bản mới nhất!");
+            throw new CmsException(String.format(Messages.VERSION_OLD, strVerOld, strVerNew, SERVER_ADDRESS));
 
         appId = checkAppDto.getData().getId();
     }

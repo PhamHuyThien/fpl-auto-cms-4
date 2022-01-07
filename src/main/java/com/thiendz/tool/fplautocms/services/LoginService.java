@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thiendz.tool.fplautocms.models.Course;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
@@ -56,7 +57,7 @@ public class LoginService {
         try {
             body = response.returnContent().asString();
         } catch (HttpResponseException e) {
-            throw new CmsException("Đăng nhập thất bại, cookie sai hoặc hết hạn.");
+            throw new CmsException(Messages.LOGIN_FAIL);
         }
         document = Jsoup.parse(body);
         log.info("Request GET: {}", CMS_URL_DASHBOARD);
@@ -69,12 +70,12 @@ public class LoginService {
         }
         user = MapperUtils.objectMapper.readValue(elmUserMetaData.html(), User.class);
         if (user.getUser_id() == null) {
-            throw new CmsException("Đăng nhập thất bại, cookie sai hoặc hết hạn.");
+            throw new CmsException(Messages.LOGIN_FAIL);
         }
         Pattern pattern = Pattern.compile(REGEX_CSRF_TOKEN);
         Matcher matcher = pattern.matcher(cookie);
         if (!matcher.find()) {
-            throw new CmsException("Đăng nhập thất bại, không tìm thấy CSRF token.");
+            throw new CmsException(Messages.LOGIN_FAIL_CSRF_NOT_EXISTS);
         }
         int indexStart = matcher.group().indexOf("=");
         int indexEnd = matcher.group().indexOf(";");

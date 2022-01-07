@@ -7,6 +7,7 @@ import com.thiendz.tool.fplautocms.services.QuizService;
 import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
+import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
@@ -47,13 +48,13 @@ public class CourseController implements Runnable {
                     dashboardView.getCbbCourse().setEnabled(false);
                     dashboardView.getCbbQuiz().setEnabled(false);
                     dashboardView.getBtnSolution().setEnabled(false);
-                    dashboardView.showProcess("Đang tải dữ liệu khóa học...");
+                    dashboardView.showProcess(Messages.COURSE_LOADING);
                     QuizService quizService = new QuizService(user, course);
                     quizService.render();
                     course = quizService.getCourse();
                     pushCourse();
                     checkQuizSafety();
-                    dashboardView.showProcess("Tải dữ liệu khóa học hoàn tất.");
+                    dashboardView.showProcess(Messages.COURSE_LOADED);
                     dashboardView.getUser().getCourses().set(courseSelectedIndex - 1, course);
                     dashboardView.getCbbQuiz().setEnabled(true);
                     dashboardView.getBtnSolution().setEnabled(true);
@@ -63,13 +64,16 @@ public class CourseController implements Runnable {
                     return;
                 } catch (IOException e) {
                     log.info(e.toString());
-                    MsgBoxUtils.alert(dashboardView, Messages.CONNECT_ERROR);
+                    dashboardView.showProcess(Messages.CONNECT_ERROR);
+                    MsgBoxUtils.alertErr(dashboardView, Messages.CONNECT_ERROR);
                 } catch (CmsException e) {
                     log.info(e.toString());
-                    MsgBoxUtils.alert(dashboardView, e.toString());
+                    dashboardView.showProcess(e.toString());
+                    MsgBoxUtils.alertErr(dashboardView, e.toString());
                 } catch (Exception e) {
                     log.info(e.toString());
-                    MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
+                    dashboardView.showProcess(Messages.AN_ERROR_OCCURRED + e);
+                    MsgBoxUtils.alertErr(dashboardView, Messages.AN_ERROR_OCCURRED + e);
                 }
                 dashboardView.getTfCookie().setEnabled(true);
                 dashboardView.getBtnLogin().setEnabled(true);
@@ -91,14 +95,14 @@ public class CourseController implements Runnable {
         try {
             CourseSafetyDto courseSafetyDto = ServerService.serverService.getCourse(course);
             if (courseSafetyDto.getSafety() < 3) {
-                MsgBoxUtils.alertWar(dashboardView, "Số lương quiz môn trên server chưa đủ độ an toàn\nSố lượng quiz tìm thấy có thể bị thiếu do mạng lag...");
+                MsgBoxUtils.alertWar(dashboardView, Messages.QUIZ_NOT_SAFETY + "\n" + Messages.QUIZ_MAY_BE_MISSING);
             } else if (course.getQuizList().size() < courseSafetyDto.getTotal()) {
-                MsgBoxUtils.alertWar(dashboardView, "Không đủ số lượng quiz vui lòng khởi động lại tool và thử lại.");
+                MsgBoxUtils.alertWar(dashboardView, Messages.QUIZ_MISSING);
                 System.exit(0);
             }
         } catch (IOException e) {
             log.error(e.toString());
-            MsgBoxUtils.alertWar(dashboardView, "Không thể kết nối tới Server!\nSố lượng quiz tìm thấy có thể bị thiếu do mạng lag...");
+            MsgBoxUtils.alertWar(dashboardView, Messages.CONNECT_TO_SERVER_ERROR + "\n" + Messages.QUIZ_MAY_BE_MISSING);
         } catch (CmsException e) {
             log.error(e.toString());
             MsgBoxUtils.alertWar(dashboardView, e.toString());
@@ -113,15 +117,15 @@ public class CourseController implements Runnable {
 
     private void showDashboard() {
         dashboardView.getCbbQuiz().removeAllItems();
-        dashboardView.getCbbQuiz().addItem("Chọn Quiz...");
+        dashboardView.getCbbQuiz().addItem(Messages.SELECT_QUIZ);
         if (course != null && course.getQuizList() != null && !course.getQuizList().isEmpty()) {
             course.getQuizList().forEach(quiz -> {
                 String name = quiz.getName();
                 int score = (int) quiz.getScore();
                 int scorePossible = (int) quiz.getScorePossible();
-                dashboardView.getCbbQuiz().addItem(name + " - " + score + "/" + scorePossible + " point");
+                dashboardView.getCbbQuiz().addItem(String.format(Messages.VIEW_DETAIL_QUIZ, name, score, scorePossible));
             });
-            String autoSolutionAll = "Auto giải " + course.getQuizList().size() + " quiz (VIP)";
+            String autoSolutionAll = String.format(Messages.AUTO_ALL_QUIZ, course.getQuizList().size());
             dashboardView.getCbbQuiz().addItem(autoSolutionAll);
             dashboardView.getCbbQuiz().setSelectedItem(autoSolutionAll);
         }

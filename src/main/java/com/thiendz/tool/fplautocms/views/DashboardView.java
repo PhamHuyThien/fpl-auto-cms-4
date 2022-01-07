@@ -1,12 +1,12 @@
 package com.thiendz.tool.fplautocms.views;
 
 
-import com.thiendz.tool.fplautocms.FplAutoCmsMain;
 import com.thiendz.tool.fplautocms.controllers.CourseController;
 import com.thiendz.tool.fplautocms.controllers.LoginController;
 import com.thiendz.tool.fplautocms.controllers.SolutionController;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.controllers.ContactController;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class DashboardView extends javax.swing.JFrame {
         btnContact = new javax.swing.JToggleButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle(FplAutoCmsMain.APP_NAME + " v" + FplAutoCmsMain.APP_VER + " - " + FplAutoCmsMain.APP_SLOGAN);
+        setTitle(Messages.APP_NAME + " v" + Messages.APP_VER + " - " + Messages.APP_SLOGAN);
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -60,12 +60,12 @@ public class DashboardView extends javax.swing.JFrame {
         lbTitle.setFont(new java.awt.Font("Consolas", Font.BOLD, 36)); // NOI18N
         lbTitle.setForeground(new java.awt.Color(0, 204, 204));
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitle.setText(FplAutoCmsMain.APP_NAME);
+        lbTitle.setText(Messages.APP_NAME);
 
         lbSlogan.setFont(new java.awt.Font("Consolas", Font.BOLD, 14)); // NOI18N
         lbSlogan.setForeground(new java.awt.Color(0, 51, 255));
         lbSlogan.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbSlogan.setText("Version " + FplAutoCmsMain.APP_VER + " - " + FplAutoCmsMain.APP_SLOGAN);
+        lbSlogan.setText("Version " + Messages.APP_VER + " - " + Messages.APP_SLOGAN);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -130,7 +130,7 @@ public class DashboardView extends javax.swing.JFrame {
         lbProcess.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         lbProcess.setForeground(new java.awt.Color(0, 153, 0));
         lbProcess.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbProcess.setText("<html><center>.....................................<br>Thiên Đẹp Traii is the best!<br>.....................................<html>");
+        lbProcess.setText("<html><center>.....................................<br>" + Messages.THIEN_DZ_IS_THE_BEST + "<br>.....................................<html>");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -149,10 +149,10 @@ public class DashboardView extends javax.swing.JFrame {
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         lbHello.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
-        lbHello.setText("Hi:.................");
+        lbHello.setText(Messages.HI + ".................");
 
         lbUserId.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
-        lbUserId.setText("User ID:..............");
+        lbUserId.setText(Messages.USER_ID + "..............");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -182,12 +182,12 @@ public class DashboardView extends javax.swing.JFrame {
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         cbbCourse.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
-        cbbCourse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Chọn môn học..."}));
+        cbbCourse.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{Messages.SELECT_COURSE}));
         cbbCourse.setEnabled(false);
         cbbCourse.addActionListener(this::cbbCourseActionPerformed);
 
         cbbQuiz.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
-        cbbQuiz.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Chọn Quiz..."}));
+        cbbQuiz.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{Messages.SELECT_QUIZ}));
         cbbQuiz.setEnabled(false);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -248,7 +248,7 @@ public class DashboardView extends javax.swing.JFrame {
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Liên hệ:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", Font.PLAIN, 11))); // NOI18N
 
         lbInfo.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
-        lbInfo.setText(FplAutoCmsMain.APP_NAME + " - Code By " + FplAutoCmsMain.APP_AUTHOR + " - " + FplAutoCmsMain.APP_NICKNAME);
+        lbInfo.setText(Messages.APP_NAME + " - Code By " + Messages.APP_AUTHOR + " - " + Messages.APP_NICKNAME);
 
         btnContact.setFont(new java.awt.Font("Consolas", Font.PLAIN, 12)); // NOI18N
         btnContact.setText("Liên hệ tôi");

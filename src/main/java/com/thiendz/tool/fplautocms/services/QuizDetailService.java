@@ -104,10 +104,6 @@ public class QuizDetailService implements Runnable {
         return quiz;
     }
 
-    public static List<QuizQuestion> buildQuizQuestions(Document document) throws CmsException {
-        return buildQuizQuestions(document, false);
-    }
-
     public static List<QuizQuestion> buildQuizQuestions(Document document, boolean getStatus) throws CmsException {
         //kiểu chọn
         Elements elmsPoly = document.select("div[class='poly']");

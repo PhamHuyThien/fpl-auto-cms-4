@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtils {
+
     public static <T> List<T> regex(String regex, String input, Class<T> t) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);
@@ -18,6 +19,7 @@ public class StringUtils {
         }
         return alValue;
     }
+
     public static String convertVIToEN(String str) {
         try {
             String temp = Normalizer.normalize(str, Normalizer.Form.NFD);

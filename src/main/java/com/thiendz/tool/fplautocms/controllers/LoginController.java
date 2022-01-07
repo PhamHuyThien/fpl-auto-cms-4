@@ -36,7 +36,7 @@ public class LoginController implements Runnable {
         dashboardView.getBtnSolution().setEnabled(false);
         try {
             checkValidLoginInput();
-            dashboardView.showProcess("Đang đăng nhập...");
+            dashboardView.showProcess(Messages.WAIT_LOGIN);
             LoginService loginService = new LoginService(cookie);
             loginService.login();
             user = loginService.getUser();
@@ -47,17 +47,20 @@ public class LoginController implements Runnable {
             log.info(loginService.getUser().toString());
         } catch (InputException e) {
             log.error(e.toString());
-            MsgBoxUtils.alert(dashboardView, Messages.INVALID_INPUT + e);
+            dashboardView.showProcess(Messages.INVALID_INPUT + e);
+            MsgBoxUtils.alertErr(dashboardView, Messages.INVALID_INPUT + e);
         } catch (IOException e) {
             log.error(e.toString());
-            e.printStackTrace();
-            MsgBoxUtils.alert(dashboardView, Messages.CONNECT_ERROR);
+            dashboardView.showProcess(Messages.CONNECT_ERROR);
+            MsgBoxUtils.alertErr(dashboardView, Messages.CONNECT_ERROR);
         } catch (CmsException e) {
             log.error(e.toString());
-            MsgBoxUtils.alert(dashboardView, e.toString());
+            dashboardView.showProcess(e.toString());
+            MsgBoxUtils.alertErr(dashboardView, e.toString());
         } catch (Exception e) {
             log.error(e.toString());
-            MsgBoxUtils.alert(dashboardView, Messages.AN_ERROR_OCCURRED + e);
+            dashboardView.showProcess(Messages.AN_ERROR_OCCURRED + e);
+            MsgBoxUtils.alertErr(dashboardView, Messages.AN_ERROR_OCCURRED + e);
         }
         dashboardView.getTfCookie().setEnabled(true);
         dashboardView.getBtnLogin().setEnabled(true);
@@ -73,16 +76,16 @@ public class LoginController implements Runnable {
 
     private void checkValidLoginInput() throws InputException {
         if (cookie.trim().length() == 0) {
-            throw new InputException("Bạn phải nhập cookie trước khi đăng nhập.");
+            throw new InputException(Messages.COOKIE_EMPTY);
         }
     }
 
     private void showDashboard() {
         dashboardView.setUser(user);
-        dashboardView.getLbHello().setText("Hi: " + user.getUsername());
-        dashboardView.getLbUserId().setText("User ID: " + user.getUser_id());
+        dashboardView.getLbHello().setText(Messages.HI + user.getUsername());
+        dashboardView.getLbUserId().setText(Messages.USER_ID + user.getUser_id());
         dashboardView.getCbbCourse().removeAllItems();
-        dashboardView.getCbbCourse().addItem("Chọn môn học...");
+        dashboardView.getCbbCourse().addItem(Messages.SELECT_COURSE);
         user.getCourses().forEach(course -> dashboardView.getCbbCourse().addItem(course.getName()));
         dashboardView.getCbbCourse().setEnabled(true);
     }

@@ -7,6 +7,7 @@ import com.thiendz.tool.fplautocms.models.QuizQuestion;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.dto.SolutionResponseDto;
 import com.thiendz.tool.fplautocms.utils.*;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +99,9 @@ public class SolutionService implements Runnable {
                         .setHeader("Referer", quiz.getUrl())
                         .setHeader("Accept", "application/json, text/javascript, */*; q=0.01")
                         .setHeader("Cookie", user.getCookie())
-                        .setHeader("User-Agent", "Auto By ThienDepTrai.")
+                        .setHeader("User-Agent", Messages.APP_NAME + " v" + Messages.APP_VER)
+                        .setHeader("AutoBy", Messages.APP_AUTHOR)
+                        .setHeader("Contact", Messages.APP_CONTACT)
                         .bodyString(bodyParam, ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8));
                 String bodyResponseSolution = executor.execute(request).returnContent().asString();
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);

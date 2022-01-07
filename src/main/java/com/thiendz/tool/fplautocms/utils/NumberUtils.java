@@ -16,7 +16,7 @@ public class NumberUtils {
         for (int i = 0; i < index; i++) {
             j *= 10;
         }
-        return (double) Math.floor(d * j) / j;
+        return Math.floor(d * j) / j;
     }
 
 }

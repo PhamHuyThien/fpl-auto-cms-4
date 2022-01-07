@@ -3,6 +3,7 @@ package com.thiendz.tool.fplautocms;
 import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 
@@ -18,8 +19,8 @@ public class FplAutoCmsMain {
                 " | _||  _/ |__ / _ \\ |_| | | || (_) | (__| |\\/| \\__ \\\n" +
                 " |_| |_| |____/_/ \\_\\___/  |_| \\___/ \\___|_|  |_|___/\n" +
                 "                                                         \n" +
-                "-- Version V" + APP_VER + " -----------------------------------\n" +
-                "-- Code by " + APP_AUTHOR + " -------------------------------\n"
+                "-- Version V" + Messages.APP_VER + " -----------------------------------\n" +
+                "-- Code by " + Messages.APP_AUTHOR + " -------------------------------\n"
         );
         OsUtils.fixHTTPS();
         DashboardView.start();
@@ -28,14 +29,7 @@ public class FplAutoCmsMain {
         } catch (CmsException e) {
             MsgBoxUtils.alert(null, e.toString());
         } catch (IOException e) {
-            MsgBoxUtils.alert(null, "Kết nối tới máy chủ thất bại.");
+            MsgBoxUtils.alert(null, Messages.CONNECT_TO_SERVER_ERROR);
         }
     }
-
-    public static final String APP_NAME = "FPL@utoCMS";
-    public static final String APP_VER = "4.0.0";
-    public static final String APP_SLOGAN = "10 Quiz 10 Point Easy!";
-    public static final String APP_AUTHOR = "ThienDZaii";
-    public static final String APP_NICKNAME = "SystemError";
-    public static final String APP_CONTACT = "https://fb.com/ThienDz.SystemError";
 }

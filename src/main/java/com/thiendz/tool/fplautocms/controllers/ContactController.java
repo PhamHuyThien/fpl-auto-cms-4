@@ -1,7 +1,7 @@
 package com.thiendz.tool.fplautocms.controllers;
 
-import com.thiendz.tool.fplautocms.FplAutoCmsMain;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
+import com.thiendz.tool.fplautocms.utils.consts.Messages;
 
 public class ContactController implements Runnable {
     public static void start() {
@@ -10,6 +10,6 @@ public class ContactController implements Runnable {
 
     @Override
     public void run() {
-        OsUtils.openTabBrowser(FplAutoCmsMain.APP_CONTACT);
+        OsUtils.openTabBrowser(Messages.APP_CONTACT);
     }
 }
