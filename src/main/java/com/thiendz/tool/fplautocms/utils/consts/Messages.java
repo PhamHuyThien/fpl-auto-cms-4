@@ -13,7 +13,7 @@ public class Messages {
     public static final String LOGIN_FAIL_CSRF_NOT_EXISTS = "Đăng nhập thất bại, không tìm thấy CSRF token.";
     public static final String SELECT_COURSE = "Chọn môn học...";
     public static final String SELECT_QUIZ = "Chọn Quiz...";
-    public static final String HI = "Hi: ";
+    public static final String HI = "Hello: ";
     public static final String USER_ID = "User ID: ";
     public static final String CONNECT_TO_SERVER_ERROR = "Kết nối tới máy chủ thất bại.";
     public static final String AUTO_ALL_QUIZ = "Auto giải %d quiz (VIP)";

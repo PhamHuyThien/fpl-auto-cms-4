@@ -34,6 +34,8 @@ public class LoginController implements Runnable {
         dashboardView.getCbbCourse().setEnabled(false);
         dashboardView.getCbbQuiz().setEnabled(false);
         dashboardView.getBtnSolution().setEnabled(false);
+        dashboardView.getLbHello().setText(Messages.HI + "..................");
+        dashboardView.getLbUserId().setText(Messages.USER_ID + "..............");
         try {
             checkValidLoginInput();
             dashboardView.showProcess(Messages.WAIT_LOGIN);
