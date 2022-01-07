@@ -38,12 +38,12 @@ public class CourseController implements Runnable {
         if (courseSelectedIndex > 0) {
             if (user.getCourses().get(courseSelectedIndex - 1).getQuizList() == null) {
                 try {
+                    checkValidInput();
                     dashboardView.getTfCookie().setEnabled(false);
                     dashboardView.getBtnLogin().setEnabled(false);
                     dashboardView.getCbbCourse().setEnabled(false);
                     dashboardView.getCbbQuiz().setEnabled(false);
                     dashboardView.getBtnSolution().setEnabled(false);
-                    checkValidInput();
                     dashboardView.showProcess("Đang tải dữ liệu khóa học...");
                     QuizService quizService = new QuizService(user, course);
                     quizService.render();

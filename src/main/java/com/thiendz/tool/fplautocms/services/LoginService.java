@@ -6,7 +6,11 @@ import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,14 +45,16 @@ public class LoginService {
     }
 
     private void parseDocument() throws IOException {
-        String bodyDash = Request
-                .Get(CMS_URL_DASHBOARD)
-                .setHeader("cookie", cookie)
-                .execute()
+        final HttpClient client = HttpClientBuilder.create()
+                .disableRedirectHandling()
+                .build();
+        Executor executor = Executor.newInstance(client);
+        Request request = Request.Get(CMS_URL_DASHBOARD).setHeader("cookie", cookie);
+        String bodyDash = executor.execute(request)
                 .returnContent()
                 .asString();
-        log.info("Request GET: {}", CMS_URL_DASHBOARD);
         document = Jsoup.parse(bodyDash);
+        log.info("Request GET: {}", CMS_URL_DASHBOARD);
     }
 
     private void parseUserInfo() throws CmsException, JsonProcessingException {
