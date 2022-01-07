@@ -10,6 +10,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -44,16 +45,20 @@ public class LoginService {
         parseCourseInfo();
     }
 
-    private void parseDocument() throws IOException {
-        final HttpClient client = HttpClientBuilder.create()
+    private void parseDocument() throws IOException, CmsException {
+        HttpClient client = HttpClientBuilder.create()
                 .disableRedirectHandling()
                 .build();
         Executor executor = Executor.newInstance(client);
         Request request = Request.Get(CMS_URL_DASHBOARD).setHeader("cookie", cookie);
-        String bodyDash = executor.execute(request)
-                .returnContent()
-                .asString();
-        document = Jsoup.parse(bodyDash);
+        Response response = executor.execute(request);
+        String body;
+        try {
+            body = response.returnContent().asString();
+        } catch (HttpResponseException e) {
+            throw new CmsException("Đăng nhập thất bại, cookie sai hoặc hết hạn.");
+        }
+        document = Jsoup.parse(body);
         log.info("Request GET: {}", CMS_URL_DASHBOARD);
     }
 

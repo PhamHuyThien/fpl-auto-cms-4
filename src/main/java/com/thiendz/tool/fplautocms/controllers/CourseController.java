@@ -1,9 +1,12 @@
 package com.thiendz.tool.fplautocms.controllers;
 
+import com.thiendz.tool.fplautocms.dto.CourseSafetyDto;
 import com.thiendz.tool.fplautocms.models.Course;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.services.QuizService;
+import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
+import com.thiendz.tool.fplautocms.utils.OsUtils;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
@@ -48,6 +51,8 @@ public class CourseController implements Runnable {
                     QuizService quizService = new QuizService(user, course);
                     quizService.render();
                     course = quizService.getCourse();
+                    pushCourse();
+                    checkQuizSafety();
                     dashboardView.showProcess("Tải dữ liệu khóa học hoàn tất.");
                     dashboardView.getUser().getCourses().set(courseSelectedIndex - 1, course);
                     dashboardView.getCbbQuiz().setEnabled(true);
@@ -69,10 +74,34 @@ public class CourseController implements Runnable {
                 dashboardView.getTfCookie().setEnabled(true);
                 dashboardView.getBtnLogin().setEnabled(true);
                 dashboardView.getCbbCourse().setEnabled(true);
-                dashboardView.getCbbQuiz().setEnabled(true);
-                dashboardView.getBtnSolution().setEnabled(true);
             }
             showDashboard();
+        }
+    }
+
+    private void pushCourse() {
+        try {
+            ServerService.serverService.pushCourse(course);
+        } catch (IOException e) {
+            log.error(e.toString());
+        }
+    }
+
+    private void checkQuizSafety() {
+        try {
+            CourseSafetyDto courseSafetyDto = ServerService.serverService.getCourse(course);
+            if (courseSafetyDto.getSafety() < 3) {
+                MsgBoxUtils.alertWar(dashboardView, "Số lương quiz môn trên server chưa đủ độ an toàn\nSố lượng quiz tìm thấy có thể bị thiếu do mạng lag...");
+            } else if (course.getQuizList().size() < courseSafetyDto.getTotal()) {
+                MsgBoxUtils.alertWar(dashboardView, "Không đủ số lượng quiz vui lòng khởi động lại tool và thử lại.");
+                System.exit(0);
+            }
+        } catch (IOException e) {
+            log.error(e.toString());
+            MsgBoxUtils.alertWar(dashboardView, "Không thể kết nối tới Server!\nSố lượng quiz tìm thấy có thể bị thiếu do mạng lag...");
+        } catch (CmsException e) {
+            log.error(e.toString());
+            MsgBoxUtils.alertWar(dashboardView, e.toString());
         }
     }
 

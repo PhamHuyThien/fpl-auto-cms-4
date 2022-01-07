@@ -2,6 +2,7 @@ package com.thiendz.tool.fplautocms.controllers;
 
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.services.LoginService;
+import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.utils.MsgBoxUtils;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
@@ -38,7 +39,8 @@ public class LoginController implements Runnable {
             dashboardView.showProcess("Đang đăng nhập...");
             LoginService loginService = new LoginService(cookie);
             loginService.login();
-            this.user = loginService.getUser();
+            user = loginService.getUser();
+            pushAnalysis();
             showDashboard();
             dashboardView.getCbbCourse().setEnabled(true);
             dashboardView.showProcess(Messages.LOGIN_SUCCESS);
@@ -61,6 +63,14 @@ public class LoginController implements Runnable {
         dashboardView.getBtnLogin().setEnabled(true);
     }
 
+    private void pushAnalysis() {
+        try {
+            ServerService.serverService.pushAnalysis(user);
+        } catch (IOException e) {
+            log.error(e.toString());
+        }
+    }
+
     private void checkValidLoginInput() throws InputException {
         if (cookie.trim().length() == 0) {
             throw new InputException("Bạn phải nhập cookie trước khi đăng nhập.");
@@ -73,9 +83,7 @@ public class LoginController implements Runnable {
         dashboardView.getLbUserId().setText("User ID: " + user.getUser_id());
         dashboardView.getCbbCourse().removeAllItems();
         dashboardView.getCbbCourse().addItem("Chọn môn học...");
-        user.getCourses().forEach(course -> {
-            dashboardView.getCbbCourse().addItem(course.getName());
-        });
+        user.getCourses().forEach(course -> dashboardView.getCbbCourse().addItem(course.getName()));
         dashboardView.getCbbCourse().setEnabled(true);
     }
 }

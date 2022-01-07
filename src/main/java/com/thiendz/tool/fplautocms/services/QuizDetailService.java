@@ -9,7 +9,6 @@ import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
@@ -47,10 +46,10 @@ public class QuizDetailService implements Runnable {
         try {
             filter();
             log.info("Request GET: {}", quiz.getUrl());
-            log.info(quiz.toString());
+            log.info("Quiz: {} => {}", quiz.getName(), quiz.toString());
         } catch (Exception ex) {
             this.quiz = null;
-            log.error(ex.toString());
+            log.error("Check quiz thất bại: {}", ex.toString());
         }
     }
 

@@ -1,5 +1,11 @@
 package com.thiendz.tool.fplautocms.utils;
 
+import com.thiendz.tool.fplautocms.dto.IpInfoDto;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.fluent.Executor;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.impl.client.HttpClientBuilder;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -11,7 +17,20 @@ import java.security.cert.X509Certificate;
 
 public class OsUtils {
 
-    public static boolean fixHTTPS() {
+    public static IpInfoDto getIpInfo() throws IOException {
+        final String url = "https://ipinfo.io/json";
+        final HttpClient client = HttpClientBuilder.create()
+                .disableRedirectHandling()
+                .build();
+        Executor executor = Executor.newInstance(client);
+        Request request = Request.Get(url).setHeader("Content-Type", "application/json; charset=utf-8");
+        String body = executor.execute(request)
+                .returnContent()
+                .asString();
+        return MapperUtils.objectMapper.readValue(body, IpInfoDto.class);
+    }
+
+    public static void fixHTTPS() {
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     @Override
@@ -32,14 +51,12 @@ public class OsUtils {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            return true;
-        } catch (GeneralSecurityException e) {
-            return false;
+        } catch (GeneralSecurityException ignored) {
         }
     }
 
     public static void openTabBrowser(String url) {
-        String path[] = new String[]{
+        String[] path = new String[]{
                 //coccoc
                 "C:\\Users\\" + getUserName() + "\\AppData\\Local\\CocCoc\\Browser\\Application\\browser.exe",
                 //chrome x86
@@ -64,7 +81,7 @@ public class OsUtils {
             try {
                 builder.start();
                 return true;
-            } catch (IOException ex) {
+            } catch (IOException ignored) {
             }
         }
         return false;
