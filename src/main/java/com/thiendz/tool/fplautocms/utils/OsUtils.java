@@ -3,6 +3,7 @@ package com.thiendz.tool.fplautocms.utils;
 import com.thiendz.tool.fplautocms.dto.IpInfoDto;
 import com.thiendz.tool.fplautocms.dto.KeyValueDto;
 import com.thiendz.tool.fplautocms.utils.consts.Environments;
+import com.thiendz.tool.fplautocms.utils.enums.OsType;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -12,10 +13,10 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
 public class OsUtils {
 
@@ -73,31 +74,22 @@ public class OsUtils {
     }
 
     public static void openTabBrowser(String url) {
-        String[] path = new String[]{
-                "C:\\Users\\" + getUserName() + "\\AppData\\Local\\CocCoc\\Browser\\Application\\browser.exe",
-                "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-                "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-                "C:\\Program Files\\Internet Explorer\\iexplore.exe"
-        };
-        for (String s : path) {
-            if (shell(s, url, "--new-tab", "--full-screen")) {
-                return;
+        OsType osType = getOperatingSystemType();
+        Runtime rt = Runtime.getRuntime();
+        try {
+            if (osType == OsType.Windows) {
+                rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (osType == OsType.MacOS) {
+                rt.exec("open " + url);
+            } else if (osType == OsType.Linux) {
+                String[] browsers = {"epiphany", "firefox", "mozilla", "konqueror", "netscape", "opera", "links", "lynx"};
+                StringBuilder cmd = new StringBuilder();
+                for (int i = 0; i < browsers.length; i++)
+                    cmd.append(i == 0 ? "" : " || ").append(browsers[i]).append(" \"").append(url).append("\" ");
+                rt.exec(new String[]{"sh", "-c", cmd.toString()});
             }
+        } catch (Exception ignored) {
         }
-    }
-
-    public static boolean shell(String... shell) {
-        if (getOSName().toLowerCase().startsWith("windows")) {
-            ProcessBuilder builder = new ProcessBuilder();
-            builder.command(shell);
-            builder.directory(new File(System.getProperty("user.home")));
-            try {
-                builder.start();
-                return true;
-            } catch (IOException ignored) {
-            }
-        }
-        return false;
     }
 
     public static String getUserName() {
@@ -108,7 +100,16 @@ public class OsUtils {
         return System.getProperty("user.dir");
     }
 
-    public static String getOSName() {
-        return System.getProperty("os.name");
+    public static OsType getOperatingSystemType() {
+        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if ((OS.contains("mac")) || (OS.contains("darwin"))) {
+            return OsType.MacOS;
+        } else if (OS.contains("win")) {
+            return OsType.Windows;
+        } else if (OS.contains("nux") || OS.contains("nix")) {
+            return OsType.Linux;
+        } else {
+            return OsType.Other;
+        }
     }
 }
