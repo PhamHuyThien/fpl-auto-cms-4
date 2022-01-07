@@ -8,8 +8,10 @@ import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class FplAutoCmsMain {
+
     public static void main(String[] args) {
         System.out.println("" +
                 "-----------------------------------------------------\n" +
@@ -22,6 +24,7 @@ public class FplAutoCmsMain {
                 "-- Version V" + Messages.APP_VER + " -----------------------------------\n" +
                 "-- Code by " + Messages.APP_AUTHOR + " -------------------------------\n"
         );
+        OsUtils.loadEnvironments(args);
         OsUtils.fixHTTPS();
         DashboardView.start();
         try {

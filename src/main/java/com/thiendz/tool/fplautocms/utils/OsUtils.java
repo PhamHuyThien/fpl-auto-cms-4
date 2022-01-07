@@ -1,6 +1,8 @@
 package com.thiendz.tool.fplautocms.utils;
 
 import com.thiendz.tool.fplautocms.dto.IpInfoDto;
+import com.thiendz.tool.fplautocms.dto.KeyValueDto;
+import com.thiendz.tool.fplautocms.utils.consts.Environments;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -16,6 +18,21 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 
 public class OsUtils {
+
+    public static void loadEnvironments(String[] args) {
+        for (String arg : args) {
+            KeyValueDto keyValueDto = KeyValueDto.map(arg);
+            switch (keyValueDto.getKey()) {
+                case "-d":
+                case "--disable-analysis":
+                    Environments.DISABLE_ANALYSIS = true;
+                    break;
+                case "-s":
+                case "--save-log":
+                    break;
+            }
+        }
+    }
 
     public static IpInfoDto getIpInfo() throws IOException {
         final String url = "https://ipinfo.io/json";
@@ -57,13 +74,9 @@ public class OsUtils {
 
     public static void openTabBrowser(String url) {
         String[] path = new String[]{
-                //coccoc
                 "C:\\Users\\" + getUserName() + "\\AppData\\Local\\CocCoc\\Browser\\Application\\browser.exe",
-                //chrome x86
                 "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-                //chrome x64
                 "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-                //ie
                 "C:\\Program Files\\Internet Explorer\\iexplore.exe"
         };
         for (String s : path) {

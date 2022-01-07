@@ -11,6 +11,7 @@ import com.thiendz.tool.fplautocms.models.Version;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
+import com.thiendz.tool.fplautocms.utils.consts.Environments;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,9 @@ public class ServerService {
     }
 
     public CourseSafetyDto getCourse(Course course) throws IOException, CmsException {
+        if (Environments.DISABLE_ANALYSIS)
+            return null;
+
         String courseId = StringUtils.URLEncoder(course.getId());
 
         String url = SERVER_API + "?c=get-course&id-tool=" + appId;
@@ -56,6 +60,9 @@ public class ServerService {
     }
 
     public Boolean pushCourse(Course course) throws IOException {
+        if (Environments.DISABLE_ANALYSIS)
+            return false;
+
         String courseId = StringUtils.URLEncoder(course.getId());
         int totalQuiz = course.getQuizList().size();
 
@@ -72,6 +79,9 @@ public class ServerService {
     }
 
     public Boolean pushAnalysis(User user) throws IOException {
+        if (Environments.DISABLE_ANALYSIS)
+            return false;
+
         IpInfoDto ipInfo = OsUtils.getIpInfo();
         String url = SERVER_API + "?c=push-analysis&id-tool=" + appId;
         String send = String.format("user=%s&ip=%s&city=%s&region=%s&country=%s&timezone=%s",
@@ -93,6 +103,8 @@ public class ServerService {
     }
 
     public void init() throws IOException, CmsException {
+        if (Environments.DISABLE_ANALYSIS)
+            return;
 
         String url = SERVER_API + "?c=get-tool-info";
         String send = "name=" + Messages.APP_NAME;
