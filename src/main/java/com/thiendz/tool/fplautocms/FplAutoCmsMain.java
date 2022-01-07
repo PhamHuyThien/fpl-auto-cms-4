@@ -8,7 +8,6 @@ import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class FplAutoCmsMain {
 
@@ -31,8 +30,10 @@ public class FplAutoCmsMain {
             ServerService.start();
         } catch (CmsException e) {
             MsgBoxUtils.alert(null, e.toString());
+            System.exit(0);
         } catch (IOException e) {
             MsgBoxUtils.alert(null, Messages.CONNECT_TO_SERVER_ERROR);
+            System.exit(0);
         }
     }
 }

@@ -40,7 +40,7 @@ public class ServerService {
 
     public CourseSafetyDto getCourse(Course course) throws IOException, CmsException {
         if (Environments.DISABLE_ANALYSIS)
-            return null;
+            return new CourseSafetyDto(-1, 9999);
 
         String courseId = StringUtils.URLEncoder(course.getId());
 

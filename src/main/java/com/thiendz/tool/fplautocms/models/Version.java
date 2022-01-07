@@ -27,7 +27,7 @@ public class Version implements Comparable<Version> {
             return 1;
         }
         String[] thisParts = version.split("\\.");
-        String[] thatParts = version.split("\\.");
+        String[] thatParts = that.version.split("\\.");
         int length = Math.max(thisParts.length, thatParts.length);
         for (int i = 0; i < length; i++) {
             int thisPart = i < thisParts.length
