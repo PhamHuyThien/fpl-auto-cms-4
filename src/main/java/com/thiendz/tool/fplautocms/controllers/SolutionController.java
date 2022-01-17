@@ -1,5 +1,7 @@
 package com.thiendz.tool.fplautocms.controllers;
 
+import com.thiendz.tool.fplautocms.models.Course;
+import com.thiendz.tool.fplautocms.models.Quiz;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.services.SolutionService;
 import com.thiendz.tool.fplautocms.utils.*;
@@ -9,6 +11,8 @@ import com.thiendz.tool.fplautocms.views.DashboardView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SolutionController implements Runnable {
     private final DashboardView dashboardView;
@@ -32,19 +36,17 @@ public class SolutionController implements Runnable {
         try {
             checkValidInput();
             dashboardView.buttonEnabled(false);
+            Course course = user.getCourses().get(indexCourse - 1);
             int start = indexQuiz - 1;
             int end = start;
-            if (indexQuiz - 1 == user.getCourses().get(indexCourse - 1).getQuizList().size()) {
+            if (indexQuiz - 1 == course.getQuizList().size()) {
                 start = 0;
                 end = indexQuiz - 2;
             }
             List<SolutionService> solutionServiceList = new ArrayList<>();
             for (int i = start; i <= end; i++) {
-                SolutionService solutionService = new SolutionService(
-                        user,
-                        user.getCourses().get(indexCourse - 1),
-                        user.getCourses().get(indexCourse - 1).getQuizList().get(i)
-                );
+                Quiz quiz = course.getQuizList().get(i);
+                SolutionService solutionService = new SolutionService(user, course, quiz);
                 solutionServiceList.add(solutionService);
             }
             ThreadUtils threadUtils = new ThreadUtils(solutionServiceList, solutionServiceList.size());
@@ -55,6 +57,7 @@ public class SolutionController implements Runnable {
                 ThreadUtils.sleep(1000);
             } while (threadUtils.isTerminating());
             showProcess(solutionServiceList, ++sec, true);
+            updateComboBoxCourse(solutionServiceList);
             MsgBoxUtils.alert(dashboardView, Messages.AUTO_SOLUTION_FINISH);
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, e.toString());
@@ -93,5 +96,29 @@ public class SolutionController implements Runnable {
         }
         String newLn = solutionServiceList.size() > 1 ? "## " : "";
         dashboardView.showProcess(show.substring(0, show.length() - 3) + newLn);
+    }
+
+    private void updateComboBoxCourse(List<SolutionService> solutionServiceList) {
+        int count = dashboardView.getCbbCourse().getItemCount();
+        List<String> cbbCourseName = new ArrayList<>();
+        for (int i = 0; i < count; i++)
+            cbbCourseName.add(dashboardView.getCbbCourse().getItemAt(i));
+        cbbCourseName = cbbCourseName.stream().map(s -> {
+            Optional<Quiz> quizOptional = solutionServiceList.stream()
+                    .map(SolutionService::getQuiz)
+                    .filter(quiz -> s.startsWith(quiz.getName()))
+                    .findFirst();
+            if (quizOptional.isPresent()) {
+                Quiz quiz = quizOptional.get();
+                String name = quiz.getName();
+                int score = (int) quiz.getScore();
+                int scorePossible = (int) quiz.getScorePossible();
+                return String.format(Messages.VIEW_DETAIL_QUIZ, name, score, scorePossible);
+            }
+            return s;
+        }).collect(Collectors.toList());
+        dashboardView.getCbbQuiz().removeAllItems();
+        cbbCourseName.forEach(s -> dashboardView.getCbbCourse().addItem(s));
+        dashboardView.getCbbCourse().setSelectedItem(cbbCourseName.get(cbbCourseName.size() - 1));
     }
 }
