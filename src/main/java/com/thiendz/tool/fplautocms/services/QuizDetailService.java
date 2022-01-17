@@ -49,7 +49,7 @@ public class QuizDetailService implements Runnable {
             log.info("Quiz: {} => {}", quiz.getName(), quiz.toString());
         } catch (Exception ex) {
             this.quiz = null;
-            log.error("Check quiz thất bại: {}", ex.toString());
+            log.error("Check quiz thất bại!", ex);
         }
     }
 

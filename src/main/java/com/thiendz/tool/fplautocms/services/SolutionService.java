@@ -11,6 +11,7 @@ import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
@@ -64,8 +65,7 @@ public class SolutionService implements Runnable {
             log.info("Quiz [{}] - score: [{}] solution finish.", quiz.getName(), scorePresent);
         } catch (CmsException | IOException | NullPointerException ex) {
             setStatus(-1);
-            log.error("Solution error: {}", ex.toString());
-            ex.printStackTrace();
+            log.error("Solution error!", ex);
         }
     }
 
@@ -84,7 +84,11 @@ public class SolutionService implements Runnable {
         do {
             if (DateUtils.getCurrentMilis() - timeTick > TIME_SLEEP_SOLUTION) {
                 String bodyParam = buildParam();
-                final HttpClient client = HttpClientBuilder.create()
+                RequestConfig requestConfig = RequestConfig.custom()
+                        .setConnectTimeout(60000)
+                        .build();
+                HttpClient client = HttpClientBuilder.create()
+                        .setDefaultRequestConfig(requestConfig)
                         .disableRedirectHandling()
                         .build();
                 Executor executor = Executor.newInstance(client);
@@ -119,20 +123,22 @@ public class SolutionService implements Runnable {
             QuizQuestion quizQuestion = quizQuestionList.get(i);
             if (quizQuestion.getListValue() == null)
                 continue;
-            List<String> selectNextValueList = selectNextValue(quizQuestion)
+            List<String> selectNextValueList = selectNextValue(quizQuestion);
+            List<String> selectNextValueEncryptList = selectNextValueList
                     .stream().map(StringUtils::URLEncoder)
                     .collect(Collectors.toList());
             String param;
             String keyEncrypt = StringUtils.URLEncoder(quizQuestion.getKey());
             if (quizQuestion.getType() == QuizQuestionType.TEXT)
-                param = keyEncrypt + "=" + String.join("%2C", selectNextValueList);
+                param = keyEncrypt + "=" + String.join("%2C", selectNextValueEncryptList);
             else
-                param = selectNextValueList
+                param = selectNextValueEncryptList
                         .stream().map(s -> keyEncrypt + "=" + s)
                         .collect(Collectors.joining("&"));
-            if (!quizQuestion.isCorrect())
+            if (!quizQuestion.isCorrect()) {
                 quiz.getQuizQuestions().get(i).setTest(quizQuestion.getTest() + 1);
-            quiz.getQuizQuestions().get(i).setValue(selectNextValueList);
+                quiz.getQuizQuestions().get(i).setValue(selectNextValueList);
+            }
             paramList.add(param);
         }
         return String.join("&", paramList);
@@ -189,8 +195,10 @@ public class SolutionService implements Runnable {
     }
 
     private void resetQuizQuestion() {
-        for (QuizQuestion quizQuestion : quiz.getQuizQuestions()) {
-            quizQuestion.setCorrect(false);
+        for (int i = 0; i < quiz.getQuizQuestions().size(); i++) {
+            quiz.getQuizQuestions().get(i).setCorrect(false);
+            quiz.getQuizQuestions().get(i).setTest(0);
+            quiz.getQuizQuestions().get(i).setValue(null);
         }
     }
 

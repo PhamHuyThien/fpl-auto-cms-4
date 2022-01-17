@@ -31,11 +31,7 @@ public class SolutionController implements Runnable {
     public void run() {
         try {
             checkValidInput();
-            dashboardView.getTfCookie().setEnabled(false);
-            dashboardView.getBtnLogin().setEnabled(false);
-            dashboardView.getCbbCourse().setEnabled(false);
-            dashboardView.getCbbQuiz().setEnabled(false);
-            dashboardView.getBtnSolution().setEnabled(false);
+            dashboardView.buttonEnabled(false);
             int start = indexQuiz - 1;
             int end = start;
             if (indexQuiz - 1 == user.getCourses().get(indexCourse - 1).getQuizList().size()) {
@@ -63,11 +59,7 @@ public class SolutionController implements Runnable {
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, e.toString());
         }
-        dashboardView.getTfCookie().setEnabled(true);
-        dashboardView.getBtnLogin().setEnabled(true);
-        dashboardView.getCbbCourse().setEnabled(true);
-        dashboardView.getCbbQuiz().setEnabled(true);
-        dashboardView.getBtnSolution().setEnabled(true);
+        dashboardView.buttonEnabled(true);
     }
 
     private void checkValidInput() throws InputException {

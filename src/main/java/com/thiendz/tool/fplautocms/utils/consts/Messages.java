@@ -10,6 +10,7 @@ public class Messages {
     public static final String WAIT_LOGIN = "Đang đăng nhập...";
     public static final String COOKIE_EMPTY = "Bạn phải nhập cookie trước khi đăng nhập.";
     public static final String LOGIN_FAIL = "Đăng nhập thất bại, cookie sai hoặc hết hạn.";
+    public static final String LOGIN_ERROR = "Đăng nhập thất bại!";
     public static final String LOGIN_FAIL_CSRF_NOT_EXISTS = "Đăng nhập thất bại, không tìm thấy CSRF token.";
     public static final String SELECT_COURSE = "Chọn môn học...";
     public static final String SELECT_QUIZ = "Chọn Quiz...";

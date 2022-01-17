@@ -339,6 +339,14 @@ public class DashboardView extends javax.swing.JFrame {
         lbProcess.setText(show);
     }
 
+    public void buttonEnabled(boolean enabled){
+        getTfCookie().setEnabled(enabled);
+        getBtnLogin().setEnabled(enabled);
+        getCbbCourse().setEnabled(enabled);
+        getCbbQuiz().setEnabled(enabled);
+        getBtnSolution().setEnabled(enabled);
+    }
+
     private javax.swing.JToggleButton btnContact;
     private javax.swing.JButton btnLogin;
     private javax.swing.JButton btnSolution;
