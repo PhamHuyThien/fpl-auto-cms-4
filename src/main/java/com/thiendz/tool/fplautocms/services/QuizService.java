@@ -78,9 +78,9 @@ public class QuizService {
             quizDto.setElement(elms.last());
             return quizDto;
         }).collect(Collectors.toList());
-        if (quizDtoList.isEmpty()) {
+        if (quizDtoList.isEmpty())
             throw new CmsException("li[class='outline-item section'] không tồn tại.");
-        }
+
         List<Quiz> quizList = quizDtoList.stream()
                 .filter(Objects::nonNull)
                 .map(quizDto -> {

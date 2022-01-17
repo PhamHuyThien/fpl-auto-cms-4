@@ -21,6 +21,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -73,31 +74,29 @@ public class QuizDetailService implements Runnable {
     }
 
     public static Quiz buildQuiz(Document document, boolean getStatus) throws CmsException {
-        //===========================
         Element elmData = document.selectFirst("div[class='seq_contents tex2jax_ignore asciimath2jax_ignore']");
-        if (elmData == null) {
+        if (elmData == null)
             throw new CmsException("div[class='seq_contents tex2jax_ignore asciimath2jax_ignore'] không tồn tại.");
-        }
+
         //tạo lại document (giải mã đoạn mã hóa)
         document = Jsoup.parse(elmData.text());
         elmData = document.selectFirst("div[class='problems-wrapper']");
-        if (elmData == null) {
+        if (elmData == null)
             throw new CmsException("div[class='problems-wrapper'] không tồn tại.");
-        }
-        //===========================
+
         Quiz quiz = new Quiz();
-        //setname
+
         Element elementNameQuiz = document.selectFirst("h2[class='hd hd-2 unit-title']");
         assert elementNameQuiz != null;
         String name = elementNameQuiz.html();
         quiz.setName(name.contains("_") ? name.substring(0, name.indexOf("_")) : name);
-        //set score
+
         double score = Double.parseDouble(elmData.attr("data-problem-score"));
         quiz.setScore(score);
-        //set score posible
+
         double scorePossible = Double.parseDouble(elmData.attr("data-problem-total-possible"));
         quiz.setScorePossible(scorePossible);
-        //set QuizQuestion
+
         String content = elmData.attr("data-content");
         document = Jsoup.parse(content);
         quiz.setQuizQuestions(buildQuizQuestions(document, getStatus));
@@ -105,18 +104,20 @@ public class QuizDetailService implements Runnable {
     }
 
     public static List<QuizQuestion> buildQuizQuestions(Document document, boolean getStatus) throws CmsException {
-        //kiểu chọn
         Elements elmsPoly = document.select("div[class='poly']");
-        //kiểu nhập
         Elements elmsPolyInput = document.select("div[class='poly poly-input']");
-        if (elmsPoly.isEmpty() && elmsPolyInput.isEmpty()) {
+        if (elmsPoly.isEmpty() && elmsPolyInput.isEmpty())
             throw new CmsException("div[class='poly'] && div[class='poly poly-input'] không có phần tử nào.");
-        }
-        List<QuizQuestion> alQuizQuestions = new ArrayList<>();
-        //xử lý kiểu chọn trước
+        List<QuizQuestion> alQuizQuestions = getQuizQuestionTypeRadioAndCheckbox(elmsPoly, getStatus);
+        alQuizQuestions.addAll(getQuizQuestionTypeText(elmsPolyInput, getStatus));
+        Collections.sort(alQuizQuestions);
+        return alQuizQuestions;
+    }
+
+    private static List<QuizQuestion> getQuizQuestionTypeRadioAndCheckbox(Elements elmsPoly, boolean status) {
+        List<QuizQuestion> quizQuestionRadioAndCheckbox = new ArrayList<>();
         for (Element elmPoly : elmsPoly) {
             Element elmWrapper = elmPoly.nextElementSibling();
-            //
             QuizQuestion quizQuestion = new QuizQuestion();
             quizQuestion.setName(Objects.requireNonNull(elmPoly.selectFirst("h3")).text());
             assert elmWrapper != null;
@@ -130,13 +131,16 @@ public class QuizDetailService implements Runnable {
             }
             quizQuestion.setInput(1);
             quizQuestion.setMultiChoice(quizQuestion.getType() == QuizQuestionType.CHECKBOX);
-            quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
-            alQuizQuestions.add(quizQuestion);
+            quizQuestion.setCorrect(status && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
+            quizQuestionRadioAndCheckbox.add(quizQuestion);
         }
-        //xử lý kiểu text sau
+        return quizQuestionRadioAndCheckbox;
+    }
+
+    private static List<QuizQuestion> getQuizQuestionTypeText(Elements elmsPolyInput, boolean status) {
+        List<QuizQuestion> quizQuestionText = new ArrayList<>();
         for (Element elmPolyInput : elmsPolyInput) {
             Element elmWrapper = elmPolyInput.nextElementSibling();
-
             QuizQuestion quizQuestion = new QuizQuestion();
             quizQuestion.setName(Objects.requireNonNull(elmPolyInput.selectFirst("h3")).text());
             quizQuestion.setType(QuizQuestionType.TEXT);
@@ -150,10 +154,10 @@ public class QuizDetailService implements Runnable {
             }
             quizQuestion.setInput(elmPolyInput.select("input").size());
             quizQuestion.setMultiChoice(quizQuestion.getInput() > 1);
-            quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
-            alQuizQuestions.add(quizQuestion);
+            quizQuestion.setCorrect(status && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
+            quizQuestionText.add(quizQuestion);
         }
-        return alQuizQuestions;
+        return quizQuestionText;
     }
 
     private static List<String> buildListValueText(Element elmPolyInput) throws CmsException, JsonProcessingException {
@@ -169,9 +173,8 @@ public class QuizDetailService implements Runnable {
 
     private static List<String> buildListValue(Element elmWrapper) throws CmsException {
         Elements elmsInput = elmWrapper.select("input");
-        if (elmsInput.isEmpty()) {
+        if (elmsInput.isEmpty())
             throw new CmsException("input[] không tồn tại.");
-        }
         return elmsInput.stream().map(element -> element.attr("value")).collect(Collectors.toList());
     }
 }
