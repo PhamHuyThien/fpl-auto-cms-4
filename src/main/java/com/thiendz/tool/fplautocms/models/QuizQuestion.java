@@ -14,19 +14,14 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class QuizQuestion {
-    private String name;
     private QuizQuestionType type;
+    private String name;
     private String question;
-    private String key; //key request
-    private List<String> listValue;// value request
-    //số lượng câu hỏi trên một question (dành cho type text)
-    private int amountInput;
-    //có chọn nhiều đáp ans ko
+    private String key;
+    private List<String> value;
+    private List<String> listValue;
+    private int input;
     private boolean multiChoice;
-    //giá trị request đi
-    private String selectValue;
-    //số lần thử
-    private int testCount;
-    //hoàn thành
+    private int test;
     private boolean correct;
 }

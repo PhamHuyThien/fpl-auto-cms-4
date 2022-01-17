@@ -128,7 +128,7 @@ public class QuizDetailService implements Runnable {
             } catch (CmsException e) {
                 continue;
             }
-            quizQuestion.setAmountInput(-1);
+            quizQuestion.setInput(1);
             quizQuestion.setMultiChoice(quizQuestion.getType() == QuizQuestionType.CHECKBOX);
             quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
             alQuizQuestions.add(quizQuestion);
@@ -148,8 +148,8 @@ public class QuizDetailService implements Runnable {
             } catch (CmsException | JsonProcessingException e) {
                 //not continue;
             }
-            quizQuestion.setAmountInput(elmPolyInput.select("input").size());
-            quizQuestion.setMultiChoice(quizQuestion.getAmountInput() > 1);
+            quizQuestion.setInput(elmPolyInput.select("input").size());
+            quizQuestion.setMultiChoice(quizQuestion.getInput() > 1);
             quizQuestion.setCorrect(getStatus && Objects.requireNonNull(elmWrapper.selectFirst("span[class='sr']")).text().equals("correct"));
             alQuizQuestions.add(quizQuestion);
         }
