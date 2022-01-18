@@ -99,11 +99,11 @@ public class SolutionController implements Runnable {
     }
 
     private void updateComboBoxCourse(List<SolutionService> solutionServiceList) {
-        int count = dashboardView.getCbbCourse().getItemCount();
-        List<String> cbbCourseName = new ArrayList<>();
+        int count = dashboardView.getCbbQuiz().getItemCount();
+        List<String> cbbQuizName = new ArrayList<>();
         for (int i = 0; i < count; i++)
-            cbbCourseName.add(dashboardView.getCbbCourse().getItemAt(i));
-        cbbCourseName = cbbCourseName.stream().map(s -> {
+            cbbQuizName.add(dashboardView.getCbbQuiz().getItemAt(i));
+        cbbQuizName = cbbQuizName.stream().map(s -> {
             Optional<Quiz> quizOptional = solutionServiceList.stream()
                     .map(SolutionService::getQuiz)
                     .filter(quiz -> s.startsWith(quiz.getName()))
@@ -118,7 +118,6 @@ public class SolutionController implements Runnable {
             return s;
         }).collect(Collectors.toList());
         dashboardView.getCbbQuiz().removeAllItems();
-        cbbCourseName.forEach(s -> dashboardView.getCbbCourse().addItem(s));
-        dashboardView.getCbbCourse().setSelectedItem(cbbCourseName.get(cbbCourseName.size() - 1));
+        cbbQuizName.forEach(s -> dashboardView.getCbbQuiz().addItem(s));
     }
 }

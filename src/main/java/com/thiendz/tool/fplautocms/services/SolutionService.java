@@ -101,8 +101,7 @@ public class SolutionService implements Runnable {
                         .bodyString(bodyParam, ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8));
                 String bodyResponseSolution = executor.execute(request).returnContent().asString();
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
-                scorePresent = solutionResponseDto.getCurrent_score();
-                updateStatusQuizQuestion(solutionResponseDto.getContents());
+                updateStatusQuizQuestion(solutionResponseDto);
                 log.info("Quiz: {}", quiz.getName());
                 log.info("Request POST: {}", url);
                 log.info("Request Send: {}", bodyParam);
@@ -167,8 +166,11 @@ public class SolutionService implements Runnable {
     }
 
 
-    private void updateStatusQuizQuestion(String body) throws CmsException {
-        Document document = Jsoup.parse(body);
+    private void updateStatusQuizQuestion(SolutionResponseDto solutionResponseDto) throws CmsException {
+        if (solutionResponseDto.getContents() == null)
+            throw new CmsException(solutionResponseDto.getSuccess());
+        this.scorePresent = solutionResponseDto.getCurrent_score();
+        Document document = Jsoup.parse(solutionResponseDto.getContents());
         List<QuizQuestion> quizResults = QuizDetailService.buildQuizQuestions(document, true);
         if (!compareKeyQuizQuestion(quiz.getQuizQuestions(), quizResults))
             throw new CmsException("Dữ liệu trả về không khớp dữ liệu tại máy.");

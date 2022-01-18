@@ -3,6 +3,7 @@
 Cập nhật lại solutionService, trách việc phát bị phát hiện bởi nhà trường.  
 Fix write log use log4j.  
 Fix connectionTimeout (60s).  
+Add log error in logs/error.log
 
 ### v4.0.0
 Chuyển sang sử dụng maven project.  
