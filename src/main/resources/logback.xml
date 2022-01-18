@@ -10,10 +10,16 @@
             <maxHistory>60</maxHistory>
         </rollingPolicy>
         <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %level %logger{36}.%M : %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
             <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%-17.17thread]) %highlight(%-5.5level) %-55.55green(%logger{36}.%M) : %-500msg%n</pattern>
         </encoder>
     </appender>
     <logger name="com.thiendz" level="debug" additivity="false">
+        <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
     <root level="error">
