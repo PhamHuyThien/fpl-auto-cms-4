@@ -99,25 +99,26 @@ public class SolutionController implements Runnable {
     }
 
     private void updateComboBoxCourse(List<SolutionService> solutionServiceList) {
+        int selected = dashboardView.getCbbQuiz().getSelectedIndex();
         int count = dashboardView.getCbbQuiz().getItemCount();
         List<String> cbbQuizName = new ArrayList<>();
         for (int i = 0; i < count; i++)
             cbbQuizName.add(dashboardView.getCbbQuiz().getItemAt(i));
         cbbQuizName = cbbQuizName.stream().map(s -> {
-            Optional<Quiz> quizOptional = solutionServiceList.stream()
-                    .map(SolutionService::getQuiz)
-                    .filter(quiz -> s.startsWith(quiz.getName()))
+            Optional<SolutionService> solutionServiceOptional = solutionServiceList.stream()
+                    .filter(solutionService -> s.startsWith(solutionService.getQuiz().getName()))
                     .findFirst();
-            if (quizOptional.isPresent()) {
-                Quiz quiz = quizOptional.get();
-                String name = quiz.getName();
-                int score = (int) quiz.getScore();
-                int scorePossible = (int) quiz.getScorePossible();
+            if (solutionServiceOptional.isPresent()) {
+                SolutionService solutionService = solutionServiceOptional.get();
+                String name = solutionService.getQuiz().getName();
+                int score = (int) solutionService.getScorePresent();
+                int scorePossible = (int) solutionService.getQuiz().getScorePossible();
                 return String.format(Messages.VIEW_DETAIL_QUIZ, name, score, scorePossible);
             }
             return s;
         }).collect(Collectors.toList());
         dashboardView.getCbbQuiz().removeAllItems();
         cbbQuizName.forEach(s -> dashboardView.getCbbQuiz().addItem(s));
+        dashboardView.getCbbQuiz().setSelectedIndex(selected);
     }
 }
