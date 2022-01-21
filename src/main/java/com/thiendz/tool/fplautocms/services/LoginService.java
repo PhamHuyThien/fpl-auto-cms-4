@@ -69,14 +69,14 @@ public class LoginService {
             throw new CmsException("script[id='user-metadata'] không tồn tại.");
         }
         user = MapperUtils.objectMapper.readValue(elmUserMetaData.html(), User.class);
-        if (user.getUser_id() == null) {
+        if (user.getUser_id() == null)
             throw new CmsException(Messages.LOGIN_FAIL);
-        }
+
         Pattern pattern = Pattern.compile(REGEX_CSRF_TOKEN);
         Matcher matcher = pattern.matcher(cookie);
-        if (!matcher.find()) {
+        if (!matcher.find())
             throw new CmsException(Messages.LOGIN_FAIL_CSRF_NOT_EXISTS);
-        }
+
         int indexStart = matcher.group().indexOf("=");
         int indexEnd = matcher.group().indexOf(";");
         user.setCsrf_token(matcher.group().substring(indexStart + 1, indexEnd));
@@ -85,9 +85,8 @@ public class LoginService {
 
     private void parseCourseInfo() throws CmsException {
         Elements elmsLeanModal = document.select("a[rel='leanModal']");
-        if (elmsLeanModal.isEmpty()) {
+        if (elmsLeanModal.isEmpty())
             throw new CmsException("a[rel='leanModal'] không tồn tại.");
-        }
         List<Course> courses = new ArrayList<>();
         for (Element elmLean : elmsLeanModal) {
             Course course = new Course();

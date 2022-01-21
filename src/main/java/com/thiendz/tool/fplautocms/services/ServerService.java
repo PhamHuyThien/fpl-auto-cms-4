@@ -1,18 +1,17 @@
 package com.thiendz.tool.fplautocms.services;
 
-import com.thiendz.tool.fplautocms.dto.CheckAppDto;
-import com.thiendz.tool.fplautocms.dto.CourseSafetyDto;
-import com.thiendz.tool.fplautocms.dto.CourseSafetyResponseDto;
-import com.thiendz.tool.fplautocms.dto.VoidResponseDto;
+import com.thiendz.tool.fplautocms.dto.*;
 import com.thiendz.tool.fplautocms.models.Course;
-import com.thiendz.tool.fplautocms.dto.IpInfoDto;
+import com.thiendz.tool.fplautocms.models.Quiz;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.models.Version;
 import com.thiendz.tool.fplautocms.utils.MapperUtils;
+import com.thiendz.tool.fplautocms.utils.NumberUtils;
 import com.thiendz.tool.fplautocms.utils.OsUtils;
 import com.thiendz.tool.fplautocms.utils.StringUtils;
 import com.thiendz.tool.fplautocms.utils.consts.Environments;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
+import com.thiendz.tool.fplautocms.utils.enums.QuizQuestionType;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
@@ -22,13 +21,16 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class ServerService {
 
     public static ServerService serverService;
 
-    private static final String SERVER_ADDRESS = "https://poly.11x7.xyz";
+    private static final String SERVER_ADDRESS = Environments.SERVER_ADDRESS;
     private static final String SERVER_API = SERVER_ADDRESS + "/api/index.php";
 
     private Integer appId;
@@ -36,6 +38,63 @@ public class ServerService {
     public static void start() throws CmsException, IOException {
         serverService = new ServerService();
         serverService.init();
+    }
+
+    public GetQuizQuestionDto getQuizQuestion(Course course, Quiz quiz) throws IOException {
+        if (Environments.DISABLE_ANALYSIS) {
+            GetQuizQuestionDto getQuizQuestionDto = new GetQuizQuestionDto();
+            getQuizQuestionDto.setStatus(0);
+            getQuizQuestionDto.setMsg("Disable analysis.");
+            return getQuizQuestionDto;
+        }
+        Integer quizNumber = NumberUtils.getInt(quiz.getName());
+        String name = StringUtils.md5(course.getId()) + "_" + (quizNumber == null ? "FT" : quizNumber);
+
+        String url = SERVER_API + "?c=get-quiz-question&course_md5_id=" + name;
+
+        String body = postRequest(url, "");
+        log.info("Request GET: {}", url);
+        log.info("Response: {}", body);
+
+        return MapperUtils.objectMapper.readValue(body, GetQuizQuestionDto.class);
+    }
+
+    public Boolean pushQuizQuestion(Course course, Quiz quiz) throws IOException {
+        if (Environments.DISABLE_ANALYSIS)
+            return false;
+        List<String> quizParamPost = quiz.getQuizQuestions().stream()
+                .map(quizQuestion -> {
+                    String param;
+                    if (!quizQuestion.isCorrect())
+                        return null;
+                    List<String> valueEncryptList = quizQuestion.getValue()
+                            .stream().map(StringUtils::URLEncoder)
+                            .collect(Collectors.toList());
+                    String keyEncrypt = StringUtils.URLEncoder(quizQuestion.getKey());
+                    if (quizQuestion.getType() == QuizQuestionType.TEXT)
+                        param = keyEncrypt + "=" + String.join("%2C", valueEncryptList);
+                    else
+                        param = valueEncryptList
+                                .stream().map(s -> keyEncrypt + "=" + s)
+                                .collect(Collectors.joining("&"));
+                    return param;
+                }).filter(Objects::nonNull).collect(Collectors.toList());
+        Integer quizNumber = NumberUtils.getInt(quiz.getName());
+        String name = StringUtils.md5(course.getId()) + "_" + (quizNumber == null ? "FT" : quizNumber);
+        String data = String.join("&", quizParamPost);
+
+        if(data.equals(""))
+            return false;
+
+        String url = SERVER_API + "?c=push-quiz-question&course_md5_id=" + name;
+        String send = "data_b64=" + StringUtils.b64Encode(data);
+
+        String body = postRequest(url, send);
+        log.info("Request POST: {}", url);
+        log.info("Request send: {}", send);
+        log.info("Response: {}", body);
+
+        return MapperUtils.objectMapper.readValue(body, VoidResponseDto.class).getStatus() == 1;
     }
 
     public CourseSafetyDto getCourse(Course course) throws IOException, CmsException {
@@ -70,7 +129,6 @@ public class ServerService {
         String send = "id-course=" + courseId + "&total-quiz=" + totalQuiz;
 
         String body = postRequest(url, send);
-
         log.info("Request POST: {}", url);
         log.info("Request send: {}", send);
         log.info("Response: {}", body);
@@ -110,7 +168,6 @@ public class ServerService {
         String send = "name=" + Messages.APP_NAME;
 
         String body = postRequest(url, send);
-
         log.info("Request POST: {}", url);
         log.info("Request send: {}", send);
         log.info("Response: {}", body);

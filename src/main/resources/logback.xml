@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property name="HOME_LOG" value="logs/cms.log"/>
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_LOG}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/cms.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>20GB</totalSizeCap>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %level %logger{36}.%M : %msg%n</pattern>
+        </encoder>
+    </appender>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%-17.17thread]) %highlight(%-5.5level) %-55.55green(%logger{36}.%M) : %-500msg%n</pattern>
         </encoder>
     </appender>
-    <root level="info">
+    <logger name="com.thiendz" level="debug" additivity="false">
         <appender-ref ref="STDOUT"/>
-    </root>
+        <appender-ref ref="FILE-ROLLING"/>
+    </logger>
 </configuration>

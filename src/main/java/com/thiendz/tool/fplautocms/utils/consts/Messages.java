@@ -10,6 +10,7 @@ public class Messages {
     public static final String WAIT_LOGIN = "Đang đăng nhập...";
     public static final String COOKIE_EMPTY = "Bạn phải nhập cookie trước khi đăng nhập.";
     public static final String LOGIN_FAIL = "Đăng nhập thất bại, cookie sai hoặc hết hạn.";
+    public static final String LOGIN_ERROR = "Đăng nhập thất bại!";
     public static final String LOGIN_FAIL_CSRF_NOT_EXISTS = "Đăng nhập thất bại, không tìm thấy CSRF token.";
     public static final String SELECT_COURSE = "Chọn môn học...";
     public static final String SELECT_QUIZ = "Chọn Quiz...";
@@ -27,7 +28,7 @@ public class Messages {
     public static final String VERSION_OLD = "FPLAutoCMS v%s đã lỗi thời!\nĐã có phiên bản v%s!\nTruy cập %s để tải bản mới nhất!";
 
     public static final String APP_NAME = "FPL@utoCMS";
-    public static final String APP_VER = "4.0.0";
+    public static final String APP_VER = "4.1.0";
     public static final String APP_SLOGAN = "10 Quiz 10 Point Easy!";
     public static final String APP_AUTHOR = "ThienDZaii";
     public static final String APP_NICKNAME = "SystemError";

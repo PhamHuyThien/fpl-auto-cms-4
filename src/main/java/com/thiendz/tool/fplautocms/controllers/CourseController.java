@@ -41,11 +41,7 @@ public class CourseController implements Runnable {
             if (user.getCourses().get(courseSelectedIndex - 1).getQuizList() == null) {
                 try {
                     checkValidInput();
-                    dashboardView.getTfCookie().setEnabled(false);
-                    dashboardView.getBtnLogin().setEnabled(false);
-                    dashboardView.getCbbCourse().setEnabled(false);
-                    dashboardView.getCbbQuiz().setEnabled(false);
-                    dashboardView.getBtnSolution().setEnabled(false);
+                    dashboardView.buttonEnabled(false);
                     dashboardView.showProcess(Messages.COURSE_LOADING);
                     QuizService quizService = new QuizService(user, course);
                     quizService.render();

@@ -29,11 +29,7 @@ public class LoginController implements Runnable {
 
     @Override
     public void run() {
-        dashboardView.getTfCookie().setEnabled(false);
-        dashboardView.getBtnLogin().setEnabled(false);
-        dashboardView.getCbbCourse().setEnabled(false);
-        dashboardView.getCbbQuiz().setEnabled(false);
-        dashboardView.getBtnSolution().setEnabled(false);
+        dashboardView.buttonEnabled(false);
         dashboardView.getLbHello().setText(Messages.HI + "..................");
         dashboardView.getLbUserId().setText(Messages.USER_ID + "..............");
         try {
@@ -48,19 +44,19 @@ public class LoginController implements Runnable {
             dashboardView.showProcess(Messages.LOGIN_SUCCESS);
             log.info(loginService.getUser().toString());
         } catch (InputException e) {
-            log.error(e.toString());
+            log.error(Messages.LOGIN_ERROR, e);
             dashboardView.showProcess(Messages.INVALID_INPUT + e);
             MsgBoxUtils.alertErr(dashboardView, Messages.INVALID_INPUT + e);
         } catch (IOException e) {
-            log.error(e.toString());
+            log.error(Messages.LOGIN_ERROR, e);
             dashboardView.showProcess(Messages.CONNECT_ERROR);
             MsgBoxUtils.alertErr(dashboardView, Messages.CONNECT_ERROR);
         } catch (CmsException e) {
-            log.error(e.toString());
+            log.error(Messages.LOGIN_ERROR, e);
             dashboardView.showProcess(e.toString());
             MsgBoxUtils.alertErr(dashboardView, e.toString());
         } catch (Exception e) {
-            log.error(e.toString());
+            log.error(Messages.LOGIN_ERROR, e);
             dashboardView.showProcess(Messages.AN_ERROR_OCCURRED + e);
             MsgBoxUtils.alertErr(dashboardView, Messages.AN_ERROR_OCCURRED + e);
         }

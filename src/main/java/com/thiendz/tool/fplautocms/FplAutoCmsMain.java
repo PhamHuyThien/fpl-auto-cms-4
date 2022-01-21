@@ -6,9 +6,12 @@ import com.thiendz.tool.fplautocms.utils.OsUtils;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Arrays;
 
+@Slf4j
 public class FplAutoCmsMain {
 
     public static void main(String[] args) {
@@ -29,9 +32,11 @@ public class FplAutoCmsMain {
         try {
             ServerService.start();
         } catch (CmsException e) {
+            log.error("Check tool fail.", e);
             MsgBoxUtils.alert(null, e.toString());
             System.exit(0);
         } catch (IOException e) {
+            log.error("Check tool fail.", e);
             MsgBoxUtils.alert(null, Messages.CONNECT_TO_SERVER_ERROR);
             System.exit(0);
         }

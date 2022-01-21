@@ -28,6 +28,14 @@ public class OsUtils {
                 case "--disable-analysis":
                     Environments.DISABLE_ANALYSIS = true;
                     break;
+                case "-sa":
+                case "--serve-add":
+                    Environments.SERVER_ADDRESS = keyValueDto.getValue();
+                    break;
+                case "-erq":
+                case "--enable-reset-quiz":
+                    Environments.ENABLE_RESET_QUIZ = true;
+                    break;
                 case "-s":
                 case "--save-log":
                     break;
