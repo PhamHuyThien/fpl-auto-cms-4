@@ -1,11 +1,12 @@
 # Change Log
 ### v4.0.1
-Cập nhật lại solutionService, trách việc phát bị phát hiện bởi nhà trường.  
+Fake request trách việc phát bị phát hiện bởi nhà trường.  
 Fix write log use log4j.  
-Fix connectionTimeout (60s).  
 Add log error in logs/error.log.  
-Add env `-sa` or `--serve-add`  
-Auto 10 quiz 10 point 10 sec  
+Fix connectionTimeout (60s).  
+Add env `-sa` or `--serve-add`.  
+Add env `-erq` or `--enable-reset-quiz`.  
+Auto 10 quiz 10 point 10 sec.  
 
 ### v4.0.0
 Chuyển sang sử dụng maven project.  

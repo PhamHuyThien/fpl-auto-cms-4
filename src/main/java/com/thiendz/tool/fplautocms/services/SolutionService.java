@@ -35,6 +35,7 @@ public class SolutionService implements Runnable {
     private final Course course;
     private final Quiz quiz;
     private String paramPost;
+    private boolean resetScoreQuiz;
 
     private int status;
     private Double scorePresent;
@@ -44,6 +45,10 @@ public class SolutionService implements Runnable {
         this.course = course;
         this.quiz = quiz;
         this.scorePresent = quiz.getScore();
+    }
+
+    public void setResetScoreQuiz(boolean resetScoreQuiz) {
+        this.resetScoreQuiz = resetScoreQuiz;
     }
 
     public void setParamPost(String paramPost) {
@@ -198,7 +203,9 @@ public class SolutionService implements Runnable {
 
     private boolean isQuizFinished() {
         List<QuizQuestion> quizQuestionList = quiz.getQuizQuestions();
-        boolean maxScore = quiz.getScore() == quiz.getScorePossible() && quiz.getScore() != 0;
+        boolean maxScore = false;
+        if (!resetScoreQuiz)
+            maxScore = quiz.getScore() == quiz.getScorePossible() && quiz.getScore() != 0;
         boolean quizFinish = quizQuestionList.stream()
                 .filter(quizQuestion -> quizQuestion.isCorrect() || quizQuestion.getListValue() == null)
                 .count() == quizQuestionList.size();

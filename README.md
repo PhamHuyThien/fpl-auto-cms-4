@@ -8,6 +8,15 @@ Chi tiết cách cài đặt môi trường, khởi động ứng dụng, sử d
 ## Tải về
 Jar FPL@utoCMS có sẵn trong [releases github](https://github.com/PhamHuyThien/fpl-auto-cms-4/releases).
 
+## Dành cho nhà phát triển
+Cài đặt lại server test `-sa`:
+```cmd
+--serve-add={LINK_TO_SERVER}
+```
+Auto lại quiz bất chấp đạt 10 điểm `-erq`:
+```cmd
+--enable-reset-quiz
+```
 ## Lưu ý
 Để cải thiện sản phẩm, mặc định chúng tôi thu thập dữ liệu người dùng.  
 Để tắt tính năng này vui lòng thêm args `-d` hoặc `--disable-analysis` khi khởi động ứng dụng.  

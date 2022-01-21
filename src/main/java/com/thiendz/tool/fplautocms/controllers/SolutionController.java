@@ -7,6 +7,7 @@ import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.services.SolutionService;
 import com.thiendz.tool.fplautocms.utils.*;
+import com.thiendz.tool.fplautocms.utils.consts.Environments;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
@@ -74,6 +75,7 @@ public class SolutionController implements Runnable {
             Quiz quiz = course.getQuizList().get(i);
             SolutionService solutionService = new SolutionService(user, course, quiz);
             solutionService.setParamPost(getSpeedParamFromServer(course, quiz));
+            solutionService.setResetScoreQuiz(Environments.ENABLE_RESET_QUIZ);
             solutionServiceList.add(solutionService);
         }
         return solutionServiceList;

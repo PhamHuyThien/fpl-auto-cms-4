@@ -32,6 +32,10 @@ public class OsUtils {
                 case "--serve-add":
                     Environments.SERVER_ADDRESS = keyValueDto.getValue();
                     break;
+                case "-erq":
+                case "--enable-reset-quiz":
+                    Environments.ENABLE_RESET_QUIZ = true;
+                    break;
                 case "-s":
                 case "--save-log":
                     break;
