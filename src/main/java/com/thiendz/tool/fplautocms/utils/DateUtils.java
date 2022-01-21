@@ -6,18 +6,19 @@ public class DateUtils {
     public static long getCurrentMilis() {
         return new Date().getTime();
     }
+
     public static String toStringDate(int second) {
         String result = "";
-        int numberOfMinutes;
-        int numberOfSeconds;
+        int numberOfMinutes, numberOfSeconds, numberOfHours;
+        numberOfHours = second / 3600;
         numberOfMinutes = ((second % 86400) % 3600) / 60;
         numberOfSeconds = ((second % 86400) % 3600) % 60;
-        if (numberOfMinutes > 0) {
+        if (numberOfHours > 0)
+            result += numberOfHours + " giờ ";
+        if (numberOfMinutes > 0)
             result += numberOfMinutes + " phút ";
-        }
-        if (numberOfSeconds > 0) {
+        if (numberOfSeconds > 0)
             result += numberOfSeconds + " giây";
-        }
         return result;
     }
 }
