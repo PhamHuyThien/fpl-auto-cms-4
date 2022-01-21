@@ -1,5 +1,6 @@
 package com.thiendz.tool.fplautocms.controllers;
 
+import com.thiendz.tool.fplautocms.dto.GetQuizQuestionDto;
 import com.thiendz.tool.fplautocms.models.Course;
 import com.thiendz.tool.fplautocms.models.Quiz;
 import com.thiendz.tool.fplautocms.models.User;
@@ -7,6 +8,7 @@ import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.services.SolutionService;
 import com.thiendz.tool.fplautocms.utils.*;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
+import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class SolutionController implements Runnable {
     private final DashboardView dashboardView;
     private final User user;
+    private Course course;
     private final int indexCourse;
     private final int indexQuiz;
 
@@ -32,6 +35,8 @@ public class SolutionController implements Runnable {
         this.dashboardView = dashboardView;
         this.user = dashboardView.getUser();
         this.indexCourse = dashboardView.getCbbCourse().getSelectedIndex();
+        if (indexCourse > 0)
+            this.course = user.getCourses().get(indexCourse - 1);
         this.indexQuiz = dashboardView.getCbbQuiz().getSelectedIndex();
     }
 
@@ -40,19 +45,7 @@ public class SolutionController implements Runnable {
         try {
             checkValidInput();
             dashboardView.buttonEnabled(false);
-            Course course = user.getCourses().get(indexCourse - 1);
-            int start = indexQuiz - 1;
-            int end = start;
-            if (indexQuiz - 1 == course.getQuizList().size()) {
-                start = 0;
-                end = indexQuiz - 2;
-            }
-            List<SolutionService> solutionServiceList = new ArrayList<>();
-            for (int i = start; i <= end; i++) {
-                Quiz quiz = course.getQuizList().get(i);
-                SolutionService solutionService = new SolutionService(user, course, quiz);
-                solutionServiceList.add(solutionService);
-            }
+            List<SolutionService> solutionServiceList = toSolutionServiceList();
             ThreadUtils threadUtils = new ThreadUtils(solutionServiceList, solutionServiceList.size());
             threadUtils.execute();
             int sec = 0;
@@ -60,14 +53,7 @@ public class SolutionController implements Runnable {
                 showProcess(solutionServiceList, ++sec, false);
                 ThreadUtils.sleep(1000);
             } while (threadUtils.isTerminating());
-            solutionServiceList.forEach(solutionService -> {
-                try {
-                    if (solutionService.getStatus() == 1)
-                        ServerService.serverService.pushQuizQuestion(course, solutionService.getQuiz());
-                } catch (IOException e) {
-                    log.error("Push quizQuestion error.", e);
-                }
-            });
+            pushQuizQuestionFinish(course, solutionServiceList);
             showProcess(solutionServiceList, ++sec, true);
             updateComboBoxCourse(solutionServiceList);
             MsgBoxUtils.alert(dashboardView, Messages.AUTO_SOLUTION_FINISH);
@@ -75,6 +61,45 @@ public class SolutionController implements Runnable {
             MsgBoxUtils.alert(dashboardView, e.toString());
         }
         dashboardView.buttonEnabled(true);
+    }
+
+    private List<SolutionService> toSolutionServiceList() {
+        int start = indexQuiz - 1;
+        int end = start;
+        if (indexQuiz - 1 == course.getQuizList().size()) {
+            start = 0;
+            end = indexQuiz - 2;
+        }
+        List<SolutionService> solutionServiceList = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            Quiz quiz = course.getQuizList().get(i);
+            SolutionService solutionService = new SolutionService(user, course, quiz);
+            solutionService.setParamPost(getSpeedParamFromServer(course, quiz));
+            solutionServiceList.add(solutionService);
+        }
+        return solutionServiceList;
+    }
+
+    private String getSpeedParamFromServer(Course course, Quiz quiz) {
+        try {
+            GetQuizQuestionDto getQuizQuestionDto = ServerService.serverService.getQuizQuestion(course, quiz);
+            if (getQuizQuestionDto.getStatus() != null && getQuizQuestionDto.getStatus() == 1)
+                return StringUtils.b64Decode(getQuizQuestionDto.getData().getData_b64());
+        } catch (Exception e) {
+            log.error("getQuizQuestionDto error.", e);
+        }
+        return null;
+    }
+
+    private void pushQuizQuestionFinish(Course course, List<SolutionService> solutionServiceList) {
+        solutionServiceList.forEach(solutionService -> {
+            try {
+                if (solutionService.getStatus() == 1 && solutionService.getParamPost() == null)
+                    ServerService.serverService.pushQuizQuestion(course, solutionService.getQuiz());
+            } catch (IOException e) {
+                log.error("Push quizQuestion error.", e);
+            }
+        });
     }
 
     private void checkValidInput() throws InputException {

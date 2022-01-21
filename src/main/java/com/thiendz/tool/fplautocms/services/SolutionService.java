@@ -34,6 +34,7 @@ public class SolutionService implements Runnable {
     private final User user;
     private final Course course;
     private final Quiz quiz;
+    private String paramPost;
 
     private int status;
     private Double scorePresent;
@@ -45,8 +46,16 @@ public class SolutionService implements Runnable {
         this.scorePresent = quiz.getScore();
     }
 
+    public void setParamPost(String paramPost) {
+        this.paramPost = paramPost;
+    }
+
     public Quiz getQuiz() {
         return quiz;
+    }
+
+    public String getParamPost() {
+        return paramPost;
     }
 
     public double getScorePresent() {
@@ -83,7 +92,7 @@ public class SolutionService implements Runnable {
         );
         do {
             if (DateUtils.getCurrentMilis() - timeTick > TIME_SLEEP_SOLUTION) {
-                String bodyParam = buildParam();
+                String bodyParam = paramPost == null ? buildParam() : paramPost;
                 RequestConfig requestConfig = RequestConfig.custom()
                         .setConnectTimeout(60000)
                         .build();

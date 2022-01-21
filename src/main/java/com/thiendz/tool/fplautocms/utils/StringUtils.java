@@ -15,8 +15,12 @@ import java.util.regex.Pattern;
 
 public class StringUtils {
 
+    public static String b64Decode(String input) {
+        return new String(Base64.getDecoder().decode(input));
+    }
+
     public static String b64Encode(String input) {
-        return Base64.getEncoder().withoutPadding().encodeToString(input.getBytes());
+        return Base64.getEncoder().encodeToString(input.getBytes());
     }
 
     @SneakyThrows

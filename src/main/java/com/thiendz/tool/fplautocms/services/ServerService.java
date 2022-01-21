@@ -1,11 +1,7 @@
 package com.thiendz.tool.fplautocms.services;
 
-import com.thiendz.tool.fplautocms.dto.CheckAppDto;
-import com.thiendz.tool.fplautocms.dto.CourseSafetyDto;
-import com.thiendz.tool.fplautocms.dto.CourseSafetyResponseDto;
-import com.thiendz.tool.fplautocms.dto.VoidResponseDto;
+import com.thiendz.tool.fplautocms.dto.*;
 import com.thiendz.tool.fplautocms.models.Course;
-import com.thiendz.tool.fplautocms.dto.IpInfoDto;
 import com.thiendz.tool.fplautocms.models.Quiz;
 import com.thiendz.tool.fplautocms.models.User;
 import com.thiendz.tool.fplautocms.models.Version;
@@ -44,8 +40,23 @@ public class ServerService {
         serverService.init();
     }
 
-    public String getQuizQuestion(Course course, Quiz quiz) {
-        return null;
+    public GetQuizQuestionDto getQuizQuestion(Course course, Quiz quiz) throws IOException {
+        if (Environments.DISABLE_ANALYSIS) {
+            GetQuizQuestionDto getQuizQuestionDto = new GetQuizQuestionDto();
+            getQuizQuestionDto.setStatus(0);
+            getQuizQuestionDto.setMsg("Disable analysis.");
+            return getQuizQuestionDto;
+        }
+        Integer quizNumber = NumberUtils.getInt(quiz.getName());
+        String name = StringUtils.md5(course.getId()) + "_" + (quizNumber == null ? "FT" : quizNumber);
+
+        String url = SERVER_API + "?c=get-quiz-question&course_md5_id=" + name;
+
+        String body = postRequest(url, "");
+        log.info("Request GET: {}", url);
+        log.info("Response: {}", body);
+
+        return MapperUtils.objectMapper.readValue(body, GetQuizQuestionDto.class);
     }
 
     public Boolean pushQuizQuestion(Course course, Quiz quiz) throws IOException {
@@ -115,7 +126,6 @@ public class ServerService {
         String send = "id-course=" + courseId + "&total-quiz=" + totalQuiz;
 
         String body = postRequest(url, send);
-
         log.info("Request POST: {}", url);
         log.info("Request send: {}", send);
         log.info("Response: {}", body);
@@ -155,7 +165,6 @@ public class ServerService {
         String send = "name=" + Messages.APP_NAME;
 
         String body = postRequest(url, send);
-
         log.info("Request POST: {}", url);
         log.info("Request send: {}", send);
         log.info("Response: {}", body);
