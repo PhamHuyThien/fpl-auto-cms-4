@@ -110,7 +110,7 @@ public class SolutionService implements Runnable {
                         .bodyString(bodyParam, ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8));
                 String bodyResponseSolution = executor.execute(request).returnContent().asString();
                 SolutionResponseDto solutionResponseDto = MapperUtils.objectMapper.readValue(bodyResponseSolution, SolutionResponseDto.class);
-                scorePresent = solutionResponseDto.getCurrent_score();
+                setScorePresent(solutionResponseDto.getCurrent_score());
                 updateStatusQuizQuestion(solutionResponseDto);
                 log.info("Quiz: {}", quiz.getName());
                 log.info("Request POST: {}", url);
@@ -215,6 +215,11 @@ public class SolutionService implements Runnable {
 
     private void setStatus(int status) {
         this.status = status;
+    }
+
+    private void setScorePresent(Double scorePresent) {
+        this.scorePresent = scorePresent;
+        quiz.setScore(scorePresent);
     }
 }
 

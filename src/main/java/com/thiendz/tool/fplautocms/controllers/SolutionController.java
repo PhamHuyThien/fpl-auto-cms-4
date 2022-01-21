@@ -8,7 +8,6 @@ import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.services.SolutionService;
 import com.thiendz.tool.fplautocms.utils.*;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
-import com.thiendz.tool.fplautocms.utils.excepts.CmsException;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
 import lombok.extern.slf4j.Slf4j;
@@ -147,6 +146,7 @@ public class SolutionController implements Runnable {
                     .findFirst();
             if (solutionServiceOptional.isPresent()) {
                 SolutionService solutionService = solutionServiceOptional.get();
+                updateQuiz(solutionService.getQuiz());
                 String name = solutionService.getQuiz().getName();
                 int score = (int) solutionService.getScorePresent();
                 int scorePossible = (int) solutionService.getQuiz().getScorePossible();
@@ -157,5 +157,16 @@ public class SolutionController implements Runnable {
         dashboardView.getCbbQuiz().removeAllItems();
         cbbQuizName.forEach(s -> dashboardView.getCbbQuiz().addItem(s));
         dashboardView.getCbbQuiz().setSelectedIndex(selected);
+        dashboardView.getUser().getCourses().set(indexCourse - 1, course);
+    }
+
+    private void updateQuiz(Quiz quiz) {
+        for (int i = 0; i < course.getQuizList().size(); i++) {
+            Quiz quiz1 = course.getQuizList().get(i);
+            if (quiz1.getName().equals(quiz.getName())) {
+                course.getQuizList().set(i, quiz);
+                break;
+            }
+        }
     }
 }

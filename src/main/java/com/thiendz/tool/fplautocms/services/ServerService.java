@@ -83,6 +83,9 @@ public class ServerService {
         String name = StringUtils.md5(course.getId()) + "_" + (quizNumber == null ? "FT" : quizNumber);
         String data = String.join("&", quizParamPost);
 
+        if(data.equals(""))
+            return false;
+
         String url = SERVER_API + "?c=push-quiz-question&course_md5_id=" + name;
         String send = "data_b64=" + StringUtils.b64Encode(data);
 
