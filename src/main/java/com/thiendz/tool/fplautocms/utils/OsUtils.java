@@ -28,6 +28,10 @@ public class OsUtils {
                 case "--disable-analysis":
                     Environments.DISABLE_ANALYSIS = true;
                     break;
+                case "-sa":
+                case "--serve-add":
+                    Environments.SERVER_ADDRESS = keyValueDto.getValue();
+                    break;
                 case "-s":
                 case "--save-log":
                     break;

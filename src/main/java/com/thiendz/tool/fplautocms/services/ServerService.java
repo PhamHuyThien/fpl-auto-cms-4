@@ -34,7 +34,7 @@ public class ServerService {
 
     public static ServerService serverService;
 
-    private static final String SERVER_ADDRESS = "https://poly.11x7.xyz";
+    private static final String SERVER_ADDRESS = Environments.SERVER_ADDRESS;
     private static final String SERVER_API = SERVER_ADDRESS + "/api/index.php";
 
     private Integer appId;
