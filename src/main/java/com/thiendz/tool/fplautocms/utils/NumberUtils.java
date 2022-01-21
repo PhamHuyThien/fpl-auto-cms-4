@@ -6,12 +6,12 @@ import java.util.Random;
 public class NumberUtils {
     public static final Random RANDOM = new Random();
 
-    public static int getInt(String text) {
+    public static Integer getInt(String text) {
         List<String> numbers = StringUtils.regex("([0-9]+)", text, String.class);
         if (!numbers.isEmpty()) {
             return Integer.parseInt(numbers.get(0));
         }
-        return -1;
+        return null;
     }
 
     public static double roundReal(double d, int index) {

@@ -28,8 +28,12 @@ public class QuizQuestion implements Comparable<QuizQuestion> {
 
     @Override
     public int compareTo(QuizQuestion thatQuizQuestion) {
-        int thisQuizNumber = NumberUtils.getInt(this.getName());
-        int thatQuizNumber = NumberUtils.getInt(thatQuizQuestion.getName());
+        Integer thisQuizNumber = NumberUtils.getInt(this.getName());
+        Integer thatQuizNumber = NumberUtils.getInt(thatQuizQuestion.getName());
+        if (thisQuizNumber == null)
+            return -1;
+        if (thatQuizNumber == null)
+            return 1;
         return thisQuizNumber - thatQuizNumber;
     }
 }

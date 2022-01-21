@@ -3,17 +3,21 @@ package com.thiendz.tool.fplautocms.controllers;
 import com.thiendz.tool.fplautocms.models.Course;
 import com.thiendz.tool.fplautocms.models.Quiz;
 import com.thiendz.tool.fplautocms.models.User;
+import com.thiendz.tool.fplautocms.services.ServerService;
 import com.thiendz.tool.fplautocms.services.SolutionService;
 import com.thiendz.tool.fplautocms.utils.*;
 import com.thiendz.tool.fplautocms.utils.consts.Messages;
 import com.thiendz.tool.fplautocms.utils.excepts.InputException;
 import com.thiendz.tool.fplautocms.views.DashboardView;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class SolutionController implements Runnable {
     private final DashboardView dashboardView;
     private final User user;
@@ -56,6 +60,14 @@ public class SolutionController implements Runnable {
                 showProcess(solutionServiceList, ++sec, false);
                 ThreadUtils.sleep(1000);
             } while (threadUtils.isTerminating());
+            solutionServiceList.forEach(solutionService -> {
+                try {
+                    if (solutionService.getStatus() == 1)
+                        ServerService.serverService.pushQuizQuestion(course, solutionService.getQuiz());
+                } catch (IOException e) {
+                    log.error("Push quizQuestion error.", e);
+                }
+            });
             showProcess(solutionServiceList, ++sec, true);
             updateComboBoxCourse(solutionServiceList);
             MsgBoxUtils.alert(dashboardView, Messages.AUTO_SOLUTION_FINISH);
@@ -78,8 +90,8 @@ public class SolutionController implements Runnable {
         String content = finish ? " - " + len + " quiz hoàn thành!" : "...";
         StringBuilder show = new StringBuilder(solution + timeStr + content + "##");
         for (SolutionService solutionService : solutionServiceList) {
-            int quizNum = NumberUtils.getInt(solutionService.getQuiz().getName());
-            String name = quizNum != -1 ? quizNum + ":" : "FT:";
+            Integer quizNum = NumberUtils.getInt(solutionService.getQuiz().getName());
+            String name = quizNum != null ? quizNum + ":" : "FT:";
             String score = name + NumberUtils.roundReal(solutionService.getScorePresent(), 1) + ":";
             switch (solutionService.getStatus()) {
                 case -1:

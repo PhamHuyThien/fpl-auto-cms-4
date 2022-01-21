@@ -25,15 +25,13 @@ public class Quiz implements Comparable<Quiz> {
         if (quiz == null) {
             return 1;
         }
-        int num = NumberUtils.getInt(this.getName());
-        int num2 = NumberUtils.getInt(quiz.getName());
-        if (num == -1) {
+        Integer thisQUizNumber = NumberUtils.getInt(this.getName());
+        Integer thatQuizNumber = NumberUtils.getInt(quiz.getName());
+        if (thisQUizNumber == null)
             return -1;
-        }
-        if (num2 == -1) {
+        if (thatQuizNumber == null)
             return 1;
-        }
-        return num - num2;
+        return thisQUizNumber - thatQuizNumber;
     }
 
 }
