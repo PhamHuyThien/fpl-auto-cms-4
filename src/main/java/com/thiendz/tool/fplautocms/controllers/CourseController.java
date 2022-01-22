@@ -54,18 +54,18 @@ public class CourseController implements Runnable {
                     dashboardView.getBtnSolution().setEnabled(true);
                     log.info(course.toString());
                 } catch (InputException e) {
-                    log.info(e.toString());
+                    log.error(e.toString());
                     return;
                 } catch (IOException e) {
-                    log.info(e.toString());
+                    log.error(e.toString());
                     dashboardView.showProcess(Messages.CONNECT_ERROR);
                     MsgBoxUtils.alertErr(dashboardView, Messages.CONNECT_ERROR);
                 } catch (CmsException e) {
-                    log.info(e.toString());
+                    log.error(e.toString());
                     dashboardView.showProcess(e.toString());
                     MsgBoxUtils.alertErr(dashboardView, e.toString());
                 } catch (Exception e) {
-                    log.info(e.toString());
+                    log.error(e.toString());
                     dashboardView.showProcess(Messages.AN_ERROR_OCCURRED + e);
                     MsgBoxUtils.alertErr(dashboardView, Messages.AN_ERROR_OCCURRED + e);
                 }
