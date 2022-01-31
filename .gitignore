@@ -6,6 +6,8 @@ target/
 /logs
 /cmd/logs/
 /cmd/*.jar
+/cmd/*.zip
+/cmd/*.rar
 
 ### STS ###
 .apt_generated
