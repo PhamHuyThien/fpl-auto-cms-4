@@ -28,7 +28,7 @@ public class Messages {
     public static final String VERSION_OLD = "FPLAutoCMS v%s đã lỗi thời!\nĐã có phiên bản v%s!\nTruy cập %s để tải bản mới nhất!";
 
     public static final String APP_NAME = "FPL@utoCMS";
-    public static final String APP_VER = "4.1.0";
+    public static final String APP_VER = "4.1.1";
     public static final String APP_SLOGAN = "10 Quiz 10 Point Easy!";
     public static final String APP_AUTHOR = "ThienDZaii";
     public static final String APP_NICKNAME = "SystemError";
