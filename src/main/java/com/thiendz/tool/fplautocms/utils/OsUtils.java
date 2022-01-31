@@ -4,6 +4,7 @@ import com.thiendz.tool.fplautocms.dto.IpInfoDto;
 import com.thiendz.tool.fplautocms.dto.KeyValueDto;
 import com.thiendz.tool.fplautocms.utils.consts.Environments;
 import com.thiendz.tool.fplautocms.utils.enums.OsType;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
@@ -18,6 +19,7 @@ import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
 import java.util.Locale;
 
+@Slf4j
 public class OsUtils {
 
     public static void loadEnvironments(String[] args) {
@@ -27,14 +29,22 @@ public class OsUtils {
                 case "-d":
                 case "--disable-analysis":
                     Environments.DISABLE_ANALYSIS = true;
+                    log.info("DISABLE_ANALYSIS = true");
                     break;
                 case "-sa":
                 case "--serve-add":
                     Environments.SERVER_ADDRESS = keyValueDto.getValue();
+                    log.info("SERVER_ADDRESS = {}", keyValueDto.getValue());
                     break;
                 case "-erq":
                 case "--enable-reset-quiz":
                     Environments.ENABLE_RESET_QUIZ = true;
+                    log.info("ENABLE_RESET_QUIZ = true");
+                    break;
+                case "-dqs":
+                case "--disable-quiz-speed":
+                    Environments.DISABLE_QUIZ_SPEED = true;
+                    log.info("DISABLE_QUIZ_SPEED = true");
                     break;
                 case "-s":
                 case "--save-log":

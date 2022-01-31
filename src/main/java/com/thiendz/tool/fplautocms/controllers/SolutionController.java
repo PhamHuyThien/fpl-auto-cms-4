@@ -74,7 +74,8 @@ public class SolutionController implements Runnable {
         for (int i = start; i <= end; i++) {
             Quiz quiz = course.getQuizList().get(i);
             SolutionService solutionService = new SolutionService(user, course, quiz);
-            solutionService.setParamPost(getSpeedParamFromServer(course, quiz));
+            if (!Environments.DISABLE_QUIZ_SPEED)
+                solutionService.setParamPost(getSpeedParamFromServer(course, quiz));
             solutionService.setResetScoreQuiz(Environments.ENABLE_RESET_QUIZ);
             solutionServiceList.add(solutionService);
         }

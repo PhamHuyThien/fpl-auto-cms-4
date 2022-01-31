@@ -1,11 +1,14 @@
 # Change Log
-### v4.0.1
+### v4.1.1
+Add env `--disable-quiz-speed`.  
+
+### v4.1.0
 Fake request trách việc phát bị phát hiện bởi nhà trường.  
 Fix write log use log4j.  
 Add log error in logs/error.log.  
 Fix connectionTimeout (60s).  
-Add env `-sa` or `--serve-add`.  
-Add env `-erq` or `--enable-reset-quiz`.  
+Add env `--serve-add`.  
+Add env `--enable-reset-quiz`.  
 Auto 10 quiz 10 point 10 sec.  
 
 ### v4.0.0

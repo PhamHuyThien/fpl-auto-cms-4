@@ -30,6 +30,12 @@ Auto lại quiz bất chấp đạt 10 điểm:
 --enable-reset-quiz
 ```
 
+Tắt chế độ giải quiz nhanh 1s:
+```cmd
+--disable-quiz-speed
+```
+
+
 Tắt chế độ theo dõi người dùng:
 
 ```cmd

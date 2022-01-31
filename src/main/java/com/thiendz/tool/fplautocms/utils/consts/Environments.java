@@ -6,4 +6,5 @@ public class Environments {
     public static boolean SAVE_LOG = false;
     public static String SERVER_ADDRESS = "https://poly.11x7.xyz";
     public static boolean ENABLE_RESET_QUIZ = false;
+    public static boolean DISABLE_QUIZ_SPEED = false;
 }
