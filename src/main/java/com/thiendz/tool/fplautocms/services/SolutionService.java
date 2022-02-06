@@ -97,7 +97,7 @@ public class SolutionService implements Runnable {
         );
         do {
             if (DateUtils.getCurrentMilis() - timeTick > TIME_SLEEP_SOLUTION) {
-                String bodyParam = paramPost == null ? buildParam() : paramPost;
+                String bodyParam = buildParam();
                 RequestConfig requestConfig = RequestConfig.custom()
                         .setConnectTimeout(60000)
                         .build();
@@ -131,6 +131,11 @@ public class SolutionService implements Runnable {
 
 
     private String buildParam() throws CmsException {
+        if (paramPost != null) {
+            String paramPostTmp = paramPost;
+            paramPost = null;
+            return paramPostTmp;
+        }
         List<QuizQuestion> quizQuestionList = quiz.getQuizQuestions();
         List<String> paramList = new ArrayList<>();
         for (int i = 0; i < quizQuestionList.size(); i++) {
