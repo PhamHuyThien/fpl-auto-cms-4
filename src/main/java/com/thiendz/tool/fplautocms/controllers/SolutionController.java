@@ -88,7 +88,7 @@ public class SolutionController implements Runnable {
             if (getQuizQuestionDto.getStatus() != null && getQuizQuestionDto.getStatus() == 1)
                 return StringUtils.b64Decode(getQuizQuestionDto.getData().getData_b64());
         } catch (Exception e) {
-            log.error("getQuizQuestionDto error.", e);
+            log.error(e.toString(), e);
         }
         return null;
     }
@@ -99,7 +99,7 @@ public class SolutionController implements Runnable {
                 if (solutionService.getStatus() == 1 && solutionService.getParamPost() == null)
                     ServerService.serverService.pushQuizQuestion(course, solutionService.getQuiz());
             } catch (IOException e) {
-                log.error("Push quizQuestion error.", e);
+                log.error(e.toString(), e);
             }
         });
     }

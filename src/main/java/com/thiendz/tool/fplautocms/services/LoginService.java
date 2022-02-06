@@ -65,9 +65,9 @@ public class LoginService {
 
     private void parseUserInfo() throws CmsException, JsonProcessingException {
         Element elmUserMetaData = document.selectFirst("script[id='user-metadata']");
-        if (elmUserMetaData == null) {
+        if (elmUserMetaData == null)
             throw new CmsException("script[id='user-metadata'] không tồn tại.");
-        }
+
         user = MapperUtils.objectMapper.readValue(elmUserMetaData.html(), User.class);
         if (user.getUser_id() == null)
             throw new CmsException(Messages.LOGIN_FAIL);

@@ -68,14 +68,13 @@ public class LoginController implements Runnable {
         try {
             ServerService.serverService.pushAnalysis(user);
         } catch (IOException e) {
-            log.error(e.toString());
+            log.error(e.toString(), e);
         }
     }
 
     private void checkValidLoginInput() throws InputException {
-        if (cookie.trim().length() == 0) {
+        if (cookie.trim().length() == 0)
             throw new InputException(Messages.COOKIE_EMPTY);
-        }
     }
 
     private void showDashboard() {

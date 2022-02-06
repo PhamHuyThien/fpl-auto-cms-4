@@ -77,9 +77,9 @@ public class SolutionService implements Runnable {
             start();
             setStatus(1);
             log.info("Quiz [{}] - score: [{}] solution finish.", quiz.getName(), scorePresent);
-        } catch (CmsException | IOException | NullPointerException ex) {
+        } catch (CmsException | IOException | NullPointerException e) {
             setStatus(-1);
-            log.error("Solution error!", ex);
+            log.error(e.toString(), e);
         }
     }
 

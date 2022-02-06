@@ -81,7 +81,7 @@ public class CourseController implements Runnable {
         try {
             ServerService.serverService.pushCourse(course);
         } catch (IOException e) {
-            log.error(e.toString());
+            log.error(e.toString(), e);
         }
     }
 
@@ -104,9 +104,8 @@ public class CourseController implements Runnable {
     }
 
     private void checkValidInput() throws InputException {
-        if (courseSelectedIndex < 1) {
+        if (courseSelectedIndex < 1)
             throw new InputException(Messages.YOU_CHOOSE_QUIZ);
-        }
     }
 
     private void showDashboard() {
