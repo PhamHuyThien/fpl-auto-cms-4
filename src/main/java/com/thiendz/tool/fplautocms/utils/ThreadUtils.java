@@ -1,10 +1,13 @@
 package com.thiendz.tool.fplautocms.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class ThreadUtils extends ThreadPoolExecutor {
 
     private boolean exec;
@@ -12,7 +15,7 @@ public class ThreadUtils extends ThreadPoolExecutor {
     private final List<? extends Runnable> runnableList;
 
     public ThreadUtils(List<? extends Runnable> runnableList, int maxThread) {
-        super(maxThread, maxThread, 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<Runnable>(1000000));
+        super(maxThread, maxThread, 10, TimeUnit.MILLISECONDS, new ArrayBlockingQueue<>(runnableList.size()));
         this.runnableList = runnableList;
     }
 
@@ -35,7 +38,8 @@ public class ThreadUtils extends ThreadPoolExecutor {
     public void await() {
         try {
             awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException ignored) {
+        } catch (InterruptedException e) {
+            log.error(e.toString(), e);
         }
     }
 
