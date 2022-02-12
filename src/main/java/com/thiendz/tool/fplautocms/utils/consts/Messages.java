@@ -26,6 +26,7 @@ public class Messages {
     public static final String COURSE_LOADED = "Tải dữ liệu khóa học hoàn tất.";
     public static final String TOOL_MAINTAIN = "Tool đang được bảo trì, quay lại sau nhé!";
     public static final String VERSION_OLD = "FPLAutoCMS v%s đã lỗi thời!\nĐã có phiên bản v%s!\nTruy cập %s để tải bản mới nhất!";
+    public static final String STARTING_SOLUTION = "Bắt đầu giải bài...";
 
     public static final String APP_NAME = "FPL@utoCMS";
     public static final String APP_VER = "4.1.1";

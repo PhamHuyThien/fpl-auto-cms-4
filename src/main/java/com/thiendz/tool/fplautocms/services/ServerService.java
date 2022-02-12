@@ -65,7 +65,7 @@ public class ServerService {
         List<String> quizParamPost = quiz.getQuizQuestions().stream()
                 .map(quizQuestion -> {
                     String param;
-                    if (!quizQuestion.isCorrect())
+                    if (!quizQuestion.isCorrect() || quizQuestion.getValue() == null)
                         return null;
                     List<String> valueEncryptList = quizQuestion.getValue()
                             .stream().map(StringUtils::URLEncoder)

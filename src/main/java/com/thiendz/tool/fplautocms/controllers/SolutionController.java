@@ -45,6 +45,7 @@ public class SolutionController implements Runnable {
         try {
             checkValidInput();
             dashboardView.buttonEnabled(false);
+            dashboardView.showProcess(Messages.STARTING_SOLUTION);
             List<SolutionService> solutionServiceList = toSolutionServiceList();
             ThreadUtils threadUtils = new ThreadUtils(solutionServiceList, solutionServiceList.size());
             threadUtils.execute();

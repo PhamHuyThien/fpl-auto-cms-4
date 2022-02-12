@@ -1,4 +1,8 @@
 # Change Log
+### v4.1.2
+Fix lỗi hoàn thành bài rồi mà k enable all button.  
+Thêm thông báo khi bắt đầu auto giải (ko có nhìn như lag).  
+
 ### v4.1.1
 Add env `--disable-quiz-speed`.  
 
