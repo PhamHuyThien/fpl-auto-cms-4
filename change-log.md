@@ -2,6 +2,7 @@
 ### v4.1.2
 Fix lỗi hoàn thành bài rồi mà k enable all button.  
 Thêm thông báo khi bắt đầu auto giải (ko có nhìn như lag).  
+Thêm phản hồi khi người dùng giải xong bài.  
 
 ### v4.1.1
 Add env `--disable-quiz-speed`.  

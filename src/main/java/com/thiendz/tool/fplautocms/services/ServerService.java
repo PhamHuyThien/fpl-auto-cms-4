@@ -40,6 +40,20 @@ public class ServerService {
         serverService.init();
     }
 
+    public Boolean feedback(User user, String content) throws IOException {
+        if (Environments.DISABLE_ANALYSIS)
+            return null;
+        String url = SERVER_API + "?c=feedback&tool_id=" + appId + "&username=" + StringUtils.URLEncoder(user.getUsername());
+        String send = "feedback=" + StringUtils.URLEncoder(content);
+
+        String body = postRequest(url, send);
+        log.info("Request POST: {}", url);
+        log.info("Request send: {}", send);
+        log.info("Response: {}", body);
+
+        return MapperUtils.objectMapper.readValue(body, VoidResponseDto.class).getStatus() == 1;
+    }
+
     public GetQuizQuestionDto getQuizQuestion(Course course, Quiz quiz) throws IOException {
         if (Environments.DISABLE_ANALYSIS) {
             GetQuizQuestionDto getQuizQuestionDto = new GetQuizQuestionDto();
@@ -83,7 +97,7 @@ public class ServerService {
         String name = StringUtils.md5(course.getId()) + "_" + (quizNumber == null ? "FT" : quizNumber);
         String data = String.join("&", quizParamPost);
 
-        if(data.equals(""))
+        if (data.equals(""))
             return false;
 
         String url = SERVER_API + "?c=push-quiz-question&course_md5_id=" + name;
@@ -185,7 +199,7 @@ public class ServerService {
         appId = checkAppDto.getData().getId();
     }
 
-    private String postRequest(String url, String data) throws IOException {
+    private static String postRequest(String url, String data) throws IOException {
         HttpClient client = HttpClientBuilder.create()
                 .disableRedirectHandling()
                 .build();

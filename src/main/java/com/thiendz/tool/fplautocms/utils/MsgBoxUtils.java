@@ -37,4 +37,8 @@ public class MsgBoxUtils {
     public static void alertErr(Component c, String s) {
         JOptionPane.showMessageDialog(c, s, "AutoCMS Error!!!", JOptionPane.ERROR_MESSAGE);
     }
+
+    public static String promptWar(Component c, String s) {
+        return JOptionPane.showInputDialog(c, s, "AutoCMS Warning!!!", JOptionPane.WARNING_MESSAGE);
+    }
 }

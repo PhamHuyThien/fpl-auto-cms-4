@@ -58,6 +58,7 @@ public class SolutionController implements Runnable {
             showProcess(solutionServiceList, ++sec, true);
             updateComboBoxCourse(solutionServiceList);
             MsgBoxUtils.alert(dashboardView, Messages.AUTO_SOLUTION_FINISH);
+            askForFeedback();
         } catch (InputException e) {
             MsgBoxUtils.alert(dashboardView, e.toString());
         }
@@ -171,6 +172,18 @@ public class SolutionController implements Runnable {
                 course.getQuizList().set(i, quiz);
                 break;
             }
+        }
+    }
+
+    private void askForFeedback() {
+        String feedback = MsgBoxUtils.promptWar(dashboardView, Messages.ASK_FOR_FEEDBACK);
+        if (feedback != null && !feedback.trim().equals("")) {
+            try {
+                ServerService.serverService.feedback(user, feedback);
+            } catch (IOException e) {
+                log.error(e.toString(), e);
+            }
+            MsgBoxUtils.alertErr(dashboardView, Messages.THANK_FOR_FEEDBACK);
         }
     }
 }
