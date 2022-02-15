@@ -21,13 +21,18 @@ Jar FPL@utoCMS có sẵn trong [releases github](https://github.com/PhamHuyThien
 Cài đặt lại server test:
 
 ```cmd
---serve-add={LINK_TO_SERVER}
+--server-address={LINK_TO_SERVER}
 ```
 
 Auto lại quiz bất chấp đạt 10 điểm:
 
 ```cmd
 --enable-reset-quiz
+```
+
+Không giải final test:
+```cmd
+--skip-final-test
 ```
 
 Tắt chế độ giải quiz nhanh 1s:

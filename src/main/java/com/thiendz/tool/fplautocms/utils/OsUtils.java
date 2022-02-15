@@ -32,7 +32,7 @@ public class OsUtils {
                     log.info("DISABLE_ANALYSIS = true");
                     break;
                 case "-sa":
-                case "--serve-add":
+                case "--server-address":
                     Environments.SERVER_ADDRESS = keyValueDto.getValue();
                     log.info("SERVER_ADDRESS = {}", keyValueDto.getValue());
                     break;
@@ -45,6 +45,11 @@ public class OsUtils {
                 case "--disable-quiz-speed":
                     Environments.DISABLE_QUIZ_SPEED = true;
                     log.info("DISABLE_QUIZ_SPEED = true");
+                    break;
+                case "-sft":
+                case "--skip-final-test":
+                    Environments.SKIP_FINAL_TEST = true;
+                    log.info("SKIP_FINAL_TEST = true");
                     break;
                 case "-s":
                 case "--save-log":
