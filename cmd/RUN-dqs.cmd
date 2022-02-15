@@ -1,0 +1,1 @@
+java -jar fpl-auto-cms.jar -dqs
