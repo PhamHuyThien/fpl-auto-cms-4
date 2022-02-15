@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.thiendz.tool</groupId>
     <artifactId>fpl-auto-cms</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
