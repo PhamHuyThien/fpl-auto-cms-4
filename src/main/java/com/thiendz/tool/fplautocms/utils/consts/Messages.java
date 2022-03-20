@@ -31,7 +31,7 @@ public class Messages {
     public static final String THANK_FOR_FEEDBACK = "Cảm ơn bạn đã góp ý.";
 
     public static final String APP_NAME = "FPL@utoCMS";
-    public static final String APP_VER = "4.1.2";
+    public static final String APP_VER = "4.1.3";
     public static final String APP_SLOGAN = "10 Quiz 10 Point Easy!";
     public static final String APP_AUTHOR = "ThienDZaii";
     public static final String APP_NICKNAME = "SystemError";
