@@ -1,4 +1,8 @@
 # Change Log
+### v4.1.3
+Fix kết nối tới server (change to https://poly.thien.biz)  
+Update mvn build (mvn clean install)  
+
 ### v4.1.2
 Fix lỗi hoàn thành bài rồi mà k enable all button.  
 Thêm thông báo khi bắt đầu auto giải (ko có nhìn như lag).  
